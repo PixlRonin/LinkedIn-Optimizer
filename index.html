@@ -568,82 +568,64 @@ function resetSteps(){for(let i=0;i<6;i++){const e=document.getElementById('ls-'
 // PROMPT
 // Build context string shared by both calls
 function buildContext(d){
-  if(d.mode==='paste') return`ZIEL: ${d.goals}\nSprache: ${d.lang||'Deutsch'}. Ton: ${d.tone||'Professionell'}.\n\nPROFIL-TEXT:\n---\n${d.raw}\n---`;
-  return`Name: ${d.name}\nRolle: ${d.title}\nBranche: ${d.industry}\nErfahrung: ${d.years}\nZiele: ${d.goals}\nZielgruppe: ${d.audience||'n/a'}\nHeadline: ${d.headlineOld||'(keine)'}\nAbout: ${d.aboutOld||'(keine)'}\nStelle: ${d.job||'(keine)'}\nErfolge: ${d.achievements}\nKeywords: ${d.keywords||'n/a'}\nStärken: ${d.strengths||'n/a'}\nZertifikate: ${d.certs||'keine'}\nEmpfehler: ${d.recommender||'allgemein'}\nZusatz: ${d.extra||'(keine)'}\nSprache: ${d.lang||'Deutsch'}. Ton: ${d.tone||'Professionell'}.`;
+  if(d.mode==='paste') return 'Ziel: '+d.goals+'. Sprache: '+(d.lang||'Deutsch')+'. Ton: '+(d.tone||'Professionell')+'.\n\nProfiltext:\n'+d.raw;
+  return 'Name: '+d.name+' | Rolle: '+d.title+' | Branche: '+d.industry+' | Erfahrung: '+d.years+'\nZiele: '+d.goals+' | Zielgruppe: '+(d.audience||'n/a')+'\nAktuelle Headline: '+(d.headlineOld||'keine')+'\nAktuelle About: '+(d.aboutOld||'keine')+'\nAktuelle Stelle: '+(d.job||'keine')+'\nErfolge: '+d.achievements+'\nKeywords: '+(d.keywords||'n/a')+' | Staerken: '+(d.strengths||'n/a')+'\nSprache: '+(d.lang||'Deutsch')+' | Ton: '+(d.tone||'Professionell');
 }
 
-// CALL 1 – Kerntexte
+const SYSTEM_PROMPT = 'Du bist ein LinkedIn-Optimierungs-API. Gib AUSSCHLIESSLICH valides JSON zurueck. Kein Text, keine Erklaerung, kein Markdown ausser dem JSON. Nur das reine JSON-Objekt.';
+
 function buildPrompt1(d){
-  return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
-
-${buildContext(d)}
-
-\`\`\`json
-{
-  "score":<0-100>,
-  "scoreTitle":"<Kurztitel>",
-  "scoreDesc":"<2 Sätze>",
-  "headlineOld":"<erkannte Headline>",
-  "aboutOld":"<erkannte About max 200Z>",
-  "expOld":"<erkannte Erfahrung max 200Z>",
-  "headline":{"new":"<max 220Z>","why":"<1 Satz>"},
-  "about":{"new":"<600-900Z Hook+Mehrwert+Zahlen+CTA>","why":"<1 Satz>"},
-  "experience":{"new":"<5 Bullets Verb+Ergebnis+Zahl>","why":"<1 Satz>"},
-  "skills":{"new":"TOP 3: [S1,S2,S3]\n\nListe:\n• Skill...","why":"<1 Satz>"},
-  "certificates":[{"name":"<Name>","issuer":"<Aussteller>","year":"<Jahr>","tip":"<1 Satz>"}]
-}
-\`\`\``;
+  return 'Analysiere dieses LinkedIn-Profil und gib optimierte Texte als JSON zurueck.\n\n'
+    + buildContext(d)
+    + '\n\nFuelle dieses JSON-Schema aus und gib NUR das fertige JSON zurueck:\n'
+    + '{"score":65,"scoreTitle":"Profil-Bewertung","scoreDesc":"Zwei Saetze zur Bewertung.",'
+    + '"headlineOld":"Aktuelle Headline oder keine","aboutOld":"Aktuelle About max 200 Zeichen","expOld":"Aktuelle Stelle max 200 Zeichen",'
+    + '"headline":{"new":"Optimierte Headline max 220 Zeichen mit Keywords","why":"Ein Satz Begruendung"},'
+    + '"about":{"new":"Vollstaendige About-Sektion 600-800 Zeichen mit Hook Mehrwert Zahlen CTA","why":"Ein Satz"},'
+    + '"experience":{"new":"Bullet 1 Verb+Ergebnis+Zahl\\nBullet 2\\nBullet 3\\nBullet 4\\nBullet 5","why":"Ein Satz"},'
+    + '"skills":{"new":"TOP 3: Skill1, Skill2, Skill3\\n\\nListe:\\nSkill A\\nSkill B\\nSkill C","why":"Ein Satz"}}';
 }
 
-// CALL 2 – Posts, Empfehlungen, Checkliste, Tipps
-// Call 2 – Posts (kurz & knackig)
-function buildPrompt2(d, r1){
-  return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
-
-${buildContext(d)}
-
-\`\`\`json
-{"posts":[
-  {"title":"<Typ>","content":"<50-60 Wörter, Hook Zeile 1>"},
-  {"title":"<Typ>","content":"<50-60 Wörter>"},
-  {"title":"<Typ>","content":"<50-60 Wörter>"}
-]}
-\`\`\``;
+function buildPrompt2(d){
+  return 'Erstelle 3 kurze LinkedIn-Posts fuer dieses Profil.\n\n'
+    + buildContext(d)
+    + '\n\nGib NUR dieses JSON zurueck:\n'
+    + '{"posts":['
+    + '{"title":"Post Typ 1","content":"Post-Text etwa 60 Woerter Hook in erster Zeile"},'
+    + '{"title":"Post Typ 2","content":"Post-Text etwa 60 Woerter"},'
+    + '{"title":"Post Typ 3","content":"Post-Text etwa 60 Woerter"}'
+    + ']}';
 }
 
-// Call 3 – Checkliste + Tipps
 function buildPrompt3(d){
-  return`Du bist LinkedIn-Experte. Antworte NUR mit JSON, kein Text davor/danach.
-
-Branche: ${d.industry||'allgemein'}. Ziel: ${d.goals||'Sichtbarkeit'}. Sprache: ${d.lang||'Deutsch'}.
-
-\`\`\`json
-{"checklist":[
-  {"category":"Grundlagen","item":"<Aufgabe>","desc":"<1 Satz>","priority":"high"},
-  {"category":"Grundlagen","item":"<Aufgabe>","desc":"<1 Satz>","priority":"high"},
-  {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<1 Satz>","priority":"high"},
-  {"category":"Sichtbarkeit","item":"<Aufgabe>","desc":"<1 Satz>","priority":"med"},
-  {"category":"Content","item":"<Aufgabe>","desc":"<1 Satz>","priority":"med"},
-  {"category":"Content","item":"<Aufgabe>","desc":"<1 Satz>","priority":"med"},
-  {"category":"Netzwerk","item":"<Aufgabe>","desc":"<1 Satz>","priority":"low"},
-  {"category":"Netzwerk","item":"<Aufgabe>","desc":"<1 Satz>","priority":"low"}
-],
-"tips":[
-  {"title":"<T>","text":"<1 Satz>","priority":"high"},
-  {"title":"<T>","text":"<1 Satz>","priority":"high"},
-  {"title":"<T>","text":"<1 Satz>","priority":"med"},
-  {"title":"<T>","text":"<1 Satz>","priority":"med"},
-  {"title":"<T>","text":"<1 Satz>","priority":"low"},
-  {"title":"<T>","text":"<1 Satz>","priority":"low"}
-]}
-\`\`\``;
+  var ctx = 'Branche: '+(d.industry||'allgemein')+' | Ziel: '+(d.goals||'Sichtbarkeit')+' | Sprache: '+(d.lang||'Deutsch');
+  return 'Erstelle eine LinkedIn-Checkliste und Tipps.\n\n'
+    + ctx
+    + '\n\nGib NUR dieses JSON zurueck:\n'
+    + '{"checklist":['
+    + '{"category":"Grundlagen","item":"Aufgabe","desc":"Erklaerung","priority":"high"},'
+    + '{"category":"Grundlagen","item":"Aufgabe","desc":"Erklaerung","priority":"high"},'
+    + '{"category":"Sichtbarkeit","item":"Aufgabe","desc":"Erklaerung","priority":"high"},'
+    + '{"category":"Sichtbarkeit","item":"Aufgabe","desc":"Erklaerung","priority":"med"},'
+    + '{"category":"Content","item":"Aufgabe","desc":"Erklaerung","priority":"med"},'
+    + '{"category":"Content","item":"Aufgabe","desc":"Erklaerung","priority":"med"},'
+    + '{"category":"Netzwerk","item":"Aufgabe","desc":"Erklaerung","priority":"low"},'
+    + '{"category":"Netzwerk","item":"Aufgabe","desc":"Erklaerung","priority":"low"}'
+    + '],"tips":['
+    + '{"title":"Tipp","text":"Empfehlung","priority":"high"},'
+    + '{"title":"Tipp","text":"Empfehlung","priority":"high"},'
+    + '{"title":"Tipp","text":"Empfehlung","priority":"med"},'
+    + '{"title":"Tipp","text":"Empfehlung","priority":"med"},'
+    + '{"title":"Tipp","text":"Empfehlung","priority":"low"},'
+    + '{"title":"Tipp","text":"Empfehlung","priority":"low"}'
+    + ']}';
 }
 
 async function callAPI(prompt){
   const res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:6000,messages:[{role:'user',content:prompt}]})
+    body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:4000,system:SYSTEM_PROMPT,messages:[{role:'user',content:prompt}]})
   });
   if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
   const data=await res.json();
@@ -678,7 +660,7 @@ async function runAnalysis(){
 
     // Call 2: Posts
     stepActive(3);
-    const text2=await callAPI(buildPrompt2(d,r1));
+    const text2=await callAPI(buildPrompt2(d));
     const r2=parseJSON(text2);
     if(!r2){showError('Call 2 fehlgeschlagen.\n\nRohantwort:\n'+text2.substring(0,500));return;}
     stepDone(3);
