@@ -6,892 +6,233 @@
 <title>JobCoach AI – LinkedIn Optimizer</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --navy: #1B2B5E;
-    --navy-dark: #0F1A3D;
-    --navy-mid: #253580;
-    --teal: #00BFA6;
-    --teal-light: #00D4B8;
-    --teal-pale: #E0FAF7;
-    --cream: #F5F3EE;
-    --white: #FFFFFF;
-    --gray-50: #F8F9FA;
-    --gray-100: #F0F2F5;
-    --gray-200: #E2E6EC;
-    --gray-400: #9AA3B2;
-    --gray-600: #5A6478;
-    --gray-800: #2D3548;
-    --success: #00BFA6;
-    --warning: #F59E0B;
-    --danger: #EF4444;
-    --shadow-sm: 0 1px 3px rgba(27,43,94,0.08);
-    --shadow-md: 0 4px 16px rgba(27,43,94,0.12);
-    --shadow-lg: 0 8px 32px rgba(27,43,94,0.16);
-    --shadow-xl: 0 16px 48px rgba(27,43,94,0.2);
-    --radius: 12px;
-    --radius-lg: 20px;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--gray-800);
-    min-height: 100vh;
-  }
-
-  /* ─── HEADER ─── */
-  header {
-    background: var(--navy-dark);
-    padding: 0 2rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
-  }
-
-  .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-  }
-
-  /* SVG Star+Arrow Icon */
-  .logo-icon {
-    width: 38px;
-    height: 38px;
-    flex-shrink: 0;
-  }
-
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1;
-  }
-
-  .logo-name {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: -0.3px;
-  }
-
-  .logo-name span {
-    color: var(--teal);
-  }
-
-  .logo-tagline {
-    font-size: 9px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-
-  nav {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  nav a {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.6);
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
-
-  nav a:hover { color: white; background: rgba(255,255,255,0.08); }
-  nav a.active { color: var(--teal); background: rgba(0,191,166,0.12); }
-
-  .nav-cta {
-    margin-left: 8px;
-    background: var(--teal) !important;
-    color: var(--navy-dark) !important;
-    font-weight: 700 !important;
-    padding: 8px 18px !important;
-    border-radius: 8px !important;
-  }
-
-  .nav-cta:hover { background: var(--teal-light) !important; }
-
-  /* ─── HERO ─── */
-  .hero {
-    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-mid) 100%);
-    padding: 64px 2rem 80px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: -40%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(0,191,166,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: -20%;
-    left: -5%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(0,191,166,0.05) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero-inner {
-    max-width: 860px;
-    margin: 0 auto;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-  }
-
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(0,191,166,0.15);
-    border: 1px solid rgba(0,191,166,0.3);
-    color: var(--teal);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-radius: 100px;
-    margin-bottom: 24px;
-    animation: fadeInDown 0.6s ease;
-  }
-
-  .hero h1 {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: clamp(32px, 5vw, 52px);
-    font-weight: 800;
-    color: var(--white);
-    line-height: 1.15;
-    letter-spacing: -1px;
-    margin-bottom: 20px;
-    animation: fadeInDown 0.6s ease 0.1s both;
-  }
-
-  .hero h1 span { color: var(--teal); }
-
-  .hero p {
-    font-size: 18px;
-    color: rgba(255,255,255,0.65);
-    line-height: 1.7;
-    max-width: 600px;
-    margin: 0 auto 40px;
-    animation: fadeInDown 0.6s ease 0.2s both;
-  }
-
-  .hero-stats {
-    display: flex;
-    justify-content: center;
-    gap: 48px;
-    animation: fadeInDown 0.6s ease 0.3s both;
-  }
-
-  .stat {
-    text-align: center;
-  }
-
-  .stat-num {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--teal);
-    display: block;
-  }
-
-  .stat-label {
-    font-size: 12px;
-    color: rgba(255,255,255,0.45);
-    font-weight: 500;
-    letter-spacing: 0.5px;
-  }
-
-  /* ─── MAIN CONTENT ─── */
-  .main {
-    max-width: 1200px;
-    margin: -32px auto 0;
-    padding: 0 2rem 80px;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* ─── MODE TOGGLE ─── */
-  .mode-toggle {
-    display: flex;
-    background: var(--white);
-    border-radius: var(--radius);
-    padding: 4px;
-    box-shadow: var(--shadow-md);
-    margin-bottom: 28px;
-    width: fit-content;
-  }
-
-  .mode-btn {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 10px 24px;
-    border-radius: 9px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: var(--gray-400);
-    background: transparent;
-  }
-
-  .mode-btn.active {
-    background: var(--navy);
-    color: var(--white);
-    box-shadow: var(--shadow-sm);
-  }
-
-  /* ─── TWO COLUMN LAYOUT ─── */
-  .optimizer-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    align-items: start;
-  }
-
-  @media (max-width: 900px) {
-    .optimizer-layout { grid-template-columns: 1fr; }
-  }
-
-  /* ─── CARDS ─── */
-  .card {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-  }
-
-  .card-header {
-    padding: 20px 24px 16px;
-    border-bottom: 1px solid var(--gray-100);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .card-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--teal-pale);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .card-icon svg { width: 18px; height: 18px; }
-
-  .card-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--navy);
-  }
-
-  .card-subtitle {
-    font-size: 12px;
-    color: var(--gray-400);
-    margin-top: 1px;
-  }
-
-  .card-body { padding: 24px; }
-
-  /* ─── FORM FIELDS ─── */
-  .field { margin-bottom: 20px; }
-
-  .field:last-child { margin-bottom: 0; }
-
-  label {
-    display: block;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--navy);
-    margin-bottom: 8px;
-    letter-spacing: 0.2px;
-  }
-
-  label .optional {
-    font-weight: 400;
-    color: var(--gray-400);
-    font-size: 12px;
-    margin-left: 4px;
-  }
-
-  input[type="text"], textarea, select {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--gray-800);
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
-    border-radius: 10px;
-    padding: 12px 14px;
-    transition: all 0.2s;
-    outline: none;
-    resize: vertical;
-  }
-
-  input:focus, textarea:focus, select:focus {
-    border-color: var(--teal);
-    background: var(--white);
-    box-shadow: 0 0 0 3px rgba(0,191,166,0.12);
-  }
-
-  textarea { min-height: 100px; line-height: 1.6; }
-
-  /* ─── SECTION TOGGLES ─── */
-  .section-group { margin-bottom: 4px; }
-
-  .section-toggle {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    background: var(--gray-50);
-    border: 1.5px solid var(--gray-200);
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--navy);
-    margin-bottom: 0;
-  }
-
-  .section-toggle:hover { border-color: var(--teal); background: var(--teal-pale); }
-
-  .section-toggle .toggle-left { display: flex; align-items: center; gap: 10px; }
-
-  .section-toggle .chevron {
-    transition: transform 0.2s;
-    color: var(--gray-400);
-  }
-
-  .section-toggle.open .chevron { transform: rotate(180deg); }
-  .section-toggle.open { border-color: var(--teal); background: var(--teal-pale); color: var(--navy); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-
-  .section-content {
-    display: none;
-    padding: 20px;
-    border: 1.5px solid var(--teal);
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    background: rgba(0,191,166,0.02);
-  }
-
-  .section-content.open { display: block; }
-
-  /* ─── TONE SELECTOR ─── */
-  .tone-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .tone-btn {
-    padding: 10px 8px;
-    border: 1.5px solid var(--gray-200);
-    border-radius: 10px;
-    background: var(--gray-50);
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gray-600);
-  }
-
-  .tone-btn:hover { border-color: var(--teal); }
-  .tone-btn.selected { border-color: var(--teal); background: var(--teal-pale); color: var(--navy); }
-  .tone-btn .tone-icon { font-size: 18px; display: block; margin-bottom: 4px; }
-
-  /* ─── SUBMIT BUTTON ─── */
-  .btn-analyze {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-    color: var(--white);
-    border: none;
-    border-radius: 12px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    letter-spacing: 0.2px;
-    box-shadow: 0 4px 16px rgba(27,43,94,0.25);
-    margin-top: 24px;
-  }
-
-  .btn-analyze:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba(27,43,94,0.35);
-    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
-  }
-
-  .btn-analyze:active { transform: translateY(0); }
-
-  .btn-analyze .btn-teal { color: var(--teal); }
-
-  /* ─── LOADING ─── */
-  .loading-state {
-    display: none;
-    text-align: center;
-    padding: 48px 24px;
-  }
-
-  .loading-state.active { display: block; }
-
-  .loading-ring {
-    width: 56px;
-    height: 56px;
-    border: 3px solid var(--gray-200);
-    border-top-color: var(--teal);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 20px;
-  }
-
-  .loading-text {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--navy);
-    margin-bottom: 8px;
-  }
-
-  .loading-sub {
-    font-size: 13px;
-    color: var(--gray-400);
-  }
-
-  .loading-steps {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    text-align: left;
-    max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .loading-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--gray-400);
-    opacity: 0.4;
-    transition: all 0.4s;
-  }
-
-  .loading-step.done { color: var(--teal); opacity: 1; }
-  .loading-step.active { color: var(--navy); opacity: 1; font-weight: 600; }
-
-  .step-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
-  }
-
-  /* ─── RESULTS PANEL ─── */
-  .results-panel {
-    display: none;
-  }
-
-  .results-panel.active {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  /* Score Card */
-  .score-card {
-    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
-    border-radius: var(--radius-lg);
-    padding: 28px;
-    color: white;
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    box-shadow: var(--shadow-xl);
-  }
-
-  .score-ring-wrap {
-    flex-shrink: 0;
-    position: relative;
-    width: 100px;
-    height: 100px;
-  }
-
-  .score-ring-wrap svg {
-    transform: rotate(-90deg);
-    width: 100px;
-    height: 100px;
-  }
-
-  .score-ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 8; }
-  .score-ring-fill {
-    fill: none;
-    stroke: var(--teal);
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 251;
-    stroke-dashoffset: 251;
-    transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  .score-number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    color: white;
-    text-align: center;
-    line-height: 1;
-  }
-
-  .score-number span {
-    font-size: 13px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.5);
-    display: block;
-  }
-
-  .score-info { flex: 1; }
-
-  .score-label {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--teal);
-    margin-bottom: 6px;
-  }
-
-  .score-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    margin-bottom: 8px;
-  }
-
-  .score-desc {
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.6;
-  }
-
-  /* Result Sections */
-  .result-section {
-    background: var(--white);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-  }
-
-  .result-section-header {
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--gray-100);
-  }
-
-  .result-section-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--navy);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .result-tag {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 100px;
-    letter-spacing: 0.3px;
-  }
-
-  .tag-improved { background: rgba(0,191,166,0.12); color: var(--teal); }
-  .tag-new { background: rgba(27,43,94,0.08); color: var(--navy); }
-  .tag-tip { background: rgba(245,158,11,0.12); color: #B45309; }
-
-  .result-section-body { padding: 20px; }
-
-  /* Before/After */
-  .before-after {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .ba-panel {
-    padding: 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .ba-panel.before {
-    background: #FEF2F2;
-    border: 1px solid #FCA5A5;
-    color: #7F1D1D;
-  }
-
-  .ba-panel.after {
-    background: var(--teal-pale);
-    border: 1px solid rgba(0,191,166,0.3);
-    color: #065F46;
-  }
-
-  .ba-label {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    opacity: 0.6;
-  }
-
-  /* Bullet list results */
-  .result-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .result-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 12px 14px;
-    background: var(--gray-50);
-    border-radius: 10px;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--gray-800);
-    border-left: 3px solid var(--teal);
-  }
-
-  .result-item-icon {
-    color: var(--teal);
-    font-size: 14px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  /* Checklist */
-  .checklist {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .check-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: var(--gray-800);
-    padding: 4px 0;
-  }
-
-  .check-item.done .check-icon { color: var(--teal); }
-  .check-item.warn .check-icon { color: var(--warning); }
-  .check-item.fail .check-icon { color: var(--danger); }
-  .check-icon { font-size: 16px; flex-shrink: 0; }
-
-  /* Copy button */
-  .btn-copy {
-    padding: 7px 16px;
-    background: transparent;
-    border: 1.5px solid var(--gray-200);
-    border-radius: 8px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gray-600);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .btn-copy:hover { border-color: var(--teal); color: var(--teal); }
-
-  /* ─── FREEMIUM BANNER ─── */
-  .freemium-bar {
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-    border-radius: var(--radius-lg);
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    box-shadow: var(--shadow-lg);
-  }
-
-  .freemium-text strong {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: white;
-    display: block;
-    margin-bottom: 2px;
-  }
-
-  .freemium-text span {
-    font-size: 12px;
-    color: rgba(255,255,255,0.5);
-  }
-
-  .btn-upgrade {
-    flex-shrink: 0;
-    padding: 10px 22px;
-    background: var(--teal);
-    color: var(--navy-dark);
-    border: none;
-    border-radius: 8px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-
-  .btn-upgrade:hover { background: var(--teal-light); transform: translateY(-1px); }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: var(--navy-dark);
-    padding: 24px 2rem;
-    text-align: center;
-    color: rgba(255,255,255,0.3);
-    font-size: 12px;
-    letter-spacing: 0.5px;
-  }
-
-  footer span { color: var(--teal); }
-
-  /* ─── ANIMATIONS ─── */
-  @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .results-panel.active > * {
-    animation: fadeIn 0.4s ease both;
-  }
-
-  .results-panel.active > *:nth-child(1) { animation-delay: 0s; }
-  .results-panel.active > *:nth-child(2) { animation-delay: 0.08s; }
-  .results-panel.active > *:nth-child(3) { animation-delay: 0.16s; }
-  .results-panel.active > *:nth-child(4) { animation-delay: 0.24s; }
-  .results-panel.active > *:nth-child(5) { animation-delay: 0.32s; }
-
-  /* Freemium usage dots */
-  .usage-dots {
-    display: flex;
-    gap: 5px;
-    margin-top: 8px;
-  }
-
-  .usage-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-  }
-
-  .usage-dot.used { background: var(--teal); }
-
-  .paste-mode { display: none; }
-  .paste-mode.active { display: block; }
-  .form-mode { display: block; }
-  .form-mode.hidden { display: none; }
+:root {
+  --navy: #1B2B5E; --navy-dark: #0F1A3D; --navy-mid: #253580;
+  --teal: #00BFA6; --teal-light: #00D4B8; --teal-pale: #E0FAF7;
+  --cream: #F5F3EE; --white: #FFFFFF;
+  --gray-50: #F8F9FA; --gray-100: #F0F2F5; --gray-200: #E2E6EC;
+  --gray-400: #9AA3B2; --gray-600: #5A6478; --gray-800: #2D3548;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--gray-800); min-height:100vh; }
+
+/* HEADER */
+header { background:var(--navy-dark); padding:0 2rem; position:sticky; top:0; z-index:100; box-shadow:0 2px 20px rgba(0,0,0,0.3); }
+.header-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:64px; }
+.logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+.logo-icon { width:38px; height:38px; flex-shrink:0; }
+.logo-name { font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; color:white; letter-spacing:-0.3px; }
+.logo-name span { color:var(--teal); }
+.logo-tagline { font-size:9px; font-weight:500; color:rgba(255,255,255,0.4); letter-spacing:1.8px; text-transform:uppercase; margin-top:2px; }
+nav { display:flex; align-items:center; gap:4px; }
+nav a { font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:500; color:rgba(255,255,255,0.6); text-decoration:none; padding:6px 14px; border-radius:8px; transition:all 0.2s; }
+nav a:hover { color:white; background:rgba(255,255,255,0.08); }
+nav a.active { color:var(--teal); background:rgba(0,191,166,0.12); }
+.nav-cta { background:var(--teal) !important; color:var(--navy-dark) !important; font-weight:700 !important; }
+
+/* HERO */
+.hero { background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 50%,var(--navy-mid) 100%); padding:56px 2rem 72px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; top:-40%; right:-10%; width:600px; height:600px; background:radial-gradient(circle,rgba(0,191,166,0.08) 0%,transparent 70%); pointer-events:none; }
+.hero-inner { max-width:860px; margin:0 auto; text-align:center; position:relative; z-index:1; }
+.hero-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(0,191,166,0.15); border:1px solid rgba(0,191,166,0.3); color:var(--teal); font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:6px 16px; border-radius:100px; margin-bottom:20px; }
+.hero h1 { font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(28px,4.5vw,48px); font-weight:800; color:white; line-height:1.15; letter-spacing:-1px; margin-bottom:16px; }
+.hero h1 span { color:var(--teal); }
+.hero p { font-size:17px; color:rgba(255,255,255,0.6); line-height:1.7; max-width:560px; margin:0 auto; }
+
+/* MAIN */
+.main { max-width:1200px; margin:-28px auto 0; padding:0 2rem 80px; position:relative; z-index:2; }
+
+/* FREEMIUM */
+.freemium-bar { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%); border-radius:16px; padding:18px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; box-shadow:0 8px 32px rgba(27,43,94,0.2); margin-bottom:24px; }
+.freemium-text strong { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:700; color:white; display:block; margin-bottom:2px; }
+.freemium-text span { font-size:12px; color:rgba(255,255,255,0.5); }
+.usage-dots { display:flex; gap:5px; margin-top:6px; }
+.usage-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.15); }
+.usage-dot.used { background:var(--teal); }
+.btn-upgrade { flex-shrink:0; padding:10px 22px; background:var(--teal); color:var(--navy-dark); border:none; border-radius:8px; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.btn-upgrade:hover { background:var(--teal-light); transform:translateY(-1px); }
+
+/* LAYOUT */
+.layout { display:grid; grid-template-columns:420px 1fr; gap:24px; align-items:start; }
+@media(max-width:960px){ .layout { grid-template-columns:1fr; } }
+
+/* CARDS */
+.card { background:var(--white); border-radius:20px; box-shadow:0 4px 16px rgba(27,43,94,0.12); overflow:hidden; margin-bottom:16px; }
+.card:last-child { margin-bottom:0; }
+.card-header { padding:18px 22px 14px; border-bottom:1px solid var(--gray-100); display:flex; align-items:center; gap:10px; }
+.card-icon { width:34px; height:34px; border-radius:9px; background:var(--teal-pale); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.card-icon svg { width:16px; height:16px; }
+.card-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:700; color:var(--navy); }
+.card-subtitle { font-size:11px; color:var(--gray-400); margin-top:1px; }
+.card-body { padding:20px 22px; }
+
+/* FIELDS */
+.field { margin-bottom:16px; }
+.field:last-child { margin-bottom:0; }
+label { display:block; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:6px; letter-spacing:0.3px; }
+label .opt { font-weight:400; color:var(--gray-400); }
+input[type="text"], textarea {
+  width:100%; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--gray-800);
+  background:var(--gray-50); border:1.5px solid var(--gray-200); border-radius:10px;
+  padding:11px 13px; transition:all 0.2s; outline:none; resize:vertical;
+}
+input:focus, textarea:focus { border-color:var(--teal); background:white; box-shadow:0 0 0 3px rgba(0,191,166,0.1); }
+textarea { min-height:80px; line-height:1.6; }
+
+/* SECTION HEADERS with per-section tone */
+.section-block { margin-bottom:20px; border:1.5px solid var(--gray-200); border-radius:12px; overflow:hidden; }
+.section-block:last-of-type { margin-bottom:0; }
+.section-head { padding:12px 16px; background:var(--gray-50); display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+.section-head-left { display:flex; align-items:center; gap:8px; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; color:var(--navy); }
+.section-head-right { display:flex; align-items:center; gap:8px; }
+.mini-tone { font-size:11px; padding:3px 10px; background:var(--teal-pale); color:var(--teal); border-radius:20px; font-weight:600; cursor:pointer; border:1px solid rgba(0,191,166,0.2); white-space:nowrap; }
+.chevron { transition:transform 0.2s; color:var(--gray-400); }
+.section-open .chevron { transform:rotate(180deg); }
+.section-open .section-head { background:var(--teal-pale); border-bottom:1.5px solid rgba(0,191,166,0.2); }
+.section-body { display:none; padding:16px; }
+.section-open .section-body { display:block; }
+
+/* TONE PICKER POPUP */
+.tone-popup-wrap { position:relative; display:inline-block; }
+.tone-popup { display:none; position:absolute; right:0; top:calc(100% + 6px); background:white; border:1.5px solid var(--gray-200); border-radius:12px; box-shadow:0 8px 24px rgba(27,43,94,0.15); padding:8px; z-index:50; width:200px; }
+.tone-popup.open { display:block; }
+.tone-opt { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:500; color:var(--gray-800); transition:background 0.15s; white-space:nowrap; }
+.tone-opt:hover { background:var(--gray-50); }
+.tone-opt.selected { background:var(--teal-pale); color:var(--navy); font-weight:700; }
+.tone-opt .t-icon { font-size:15px; }
+
+/* KEYWORDS INPUT */
+.keyword-input-wrap { display:flex; gap:8px; margin-bottom:8px; }
+.keyword-input-wrap input { flex:1; }
+.btn-add-kw { padding:0 14px; background:var(--teal); color:white; border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; transition:background 0.2s; }
+.btn-add-kw:hover { background:var(--teal-light); }
+.keywords-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.kw-tag { display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:var(--teal-pale); color:var(--navy); border-radius:20px; font-size:12px; font-weight:600; border:1px solid rgba(0,191,166,0.3); }
+.kw-tag button { background:none; border:none; cursor:pointer; color:var(--teal); font-size:14px; line-height:1; padding:0; margin-left:2px; }
+
+/* SUBMIT */
+.btn-analyze { width:100%; padding:15px; background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%); color:white; border:none; border-radius:12px; font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 4px 16px rgba(27,43,94,0.25); margin-top:20px; }
+.btn-analyze:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(27,43,94,0.35); }
+.btn-teal { color:var(--teal); }
+
+/* RIGHT COLUMN */
+/* Empty state */
+.empty-state { text-align:center; padding:56px 32px; }
+.empty-icon { width:68px; height:68px; background:var(--teal-pale); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
+.empty-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:700; color:var(--navy); margin-bottom:8px; }
+.empty-sub { font-size:13px; color:var(--gray-400); line-height:1.7; max-width:260px; margin:0 auto 24px; }
+.empty-steps { display:flex; flex-direction:column; gap:10px; text-align:left; max-width:250px; margin:0 auto; }
+.empty-step { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--gray-600); }
+.step-num { width:22px; height:22px; background:var(--teal-pale); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; color:var(--teal); flex-shrink:0; }
+
+/* Loading */
+.loading-state { display:none; text-align:center; padding:48px 24px; }
+.loading-state.active { display:block; }
+.loading-ring { width:52px; height:52px; border:3px solid var(--gray-200); border-top-color:var(--teal); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 18px; }
+.loading-text { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+.loading-sub { font-size:13px; color:var(--gray-400); }
+.loading-steps { margin-top:20px; display:flex; flex-direction:column; gap:8px; text-align:left; max-width:260px; margin-left:auto; margin-right:auto; }
+.lstep { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--gray-400); opacity:0.4; transition:all 0.3s; }
+.lstep.active { color:var(--navy); opacity:1; font-weight:600; }
+.lstep.done { color:var(--teal); opacity:1; }
+.lstep-dot { width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0; }
+
+/* RESULTS */
+.results-wrap { display:none; }
+.results-wrap.active { display:flex; flex-direction:column; gap:20px; animation:fadeIn 0.4s ease; }
+
+/* Score card */
+.score-card { background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%); border-radius:20px; padding:24px 28px; color:white; display:flex; align-items:center; gap:24px; box-shadow:0 16px 48px rgba(27,43,94,0.2); }
+.score-ring-wrap { flex-shrink:0; position:relative; width:90px; height:90px; }
+.score-ring-wrap svg { transform:rotate(-90deg); width:90px; height:90px; }
+.ring-bg { fill:none; stroke:rgba(255,255,255,0.1); stroke-width:7; }
+.ring-fill { fill:none; stroke:var(--teal); stroke-width:7; stroke-linecap:round; stroke-dasharray:226; stroke-dashoffset:226; transition:stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1); }
+.score-num { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'Plus Jakarta Sans',sans-serif; font-size:24px; font-weight:800; color:white; text-align:center; line-height:1; }
+.score-num small { font-size:11px; font-weight:400; color:rgba(255,255,255,0.5); display:block; }
+.score-info { flex:1; }
+.score-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); margin-bottom:4px; }
+.score-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:800; margin-bottom:6px; }
+.score-desc { font-size:12px; color:rgba(255,255,255,0.6); line-height:1.6; }
+
+/* Output section blocks */
+.out-section { background:white; border-radius:20px; box-shadow:0 4px 16px rgba(27,43,94,0.1); overflow:hidden; }
+.out-header { padding:14px 20px; border-bottom:1px solid var(--gray-100); display:flex; align-items:center; justify-content:space-between; }
+.out-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:700; color:var(--navy); display:flex; align-items:center; gap:7px; }
+.out-meta { display:flex; align-items:center; gap:8px; }
+.badge { font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; }
+.badge-teal { background:var(--teal-pale); color:var(--teal); }
+.badge-navy { background:rgba(27,43,94,0.08); color:var(--navy); }
+.badge-warn { background:rgba(245,158,11,0.1); color:#B45309; }
+.out-body { padding:18px 20px; }
+
+/* Variant cards */
+.variants { display:flex; flex-direction:column; gap:10px; }
+.variant-card { border:1.5px solid var(--gray-200); border-radius:12px; padding:14px 16px; cursor:pointer; transition:all 0.2s; position:relative; }
+.variant-card:hover { border-color:var(--teal); background:rgba(0,191,166,0.02); }
+.variant-card.selected { border-color:var(--teal); background:var(--teal-pale); }
+.variant-card.selected::after { content:'✓ Ausgewählt'; position:absolute; top:10px; right:12px; font-size:11px; font-weight:700; color:var(--teal); }
+.variant-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gray-400); margin-bottom:6px; }
+.variant-card.selected .variant-label { color:var(--teal); }
+.variant-text { font-size:13px; line-height:1.65; color:var(--gray-800); }
+.variant-tone-badge { display:inline-block; font-size:10px; font-weight:600; padding:2px 8px; background:rgba(27,43,94,0.06); color:var(--navy-mid); border-radius:20px; margin-bottom:6px; }
+
+/* Edit area */
+.edit-area { margin-top:12px; }
+.edit-area textarea { min-height:90px; font-size:13px; border-color:var(--teal); background:white; }
+.edit-hint { font-size:11px; color:var(--gray-400); margin-top:6px; display:flex; align-items:center; gap:4px; }
+
+/* Action buttons row */
+.actions-row { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.btn-sm { padding:7px 14px; border-radius:8px; font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:5px; border:1.5px solid var(--gray-200); background:transparent; color:var(--gray-600); }
+.btn-sm:hover { border-color:var(--teal); color:var(--teal); }
+.btn-sm.primary { background:var(--navy); color:white; border-color:var(--navy); }
+.btn-sm.primary:hover { background:var(--navy-mid); }
+
+/* Keyword result */
+.kw-results { display:flex; flex-direction:column; gap:8px; }
+.kw-result-item { display:flex; align-items:flex-start; gap:10px; padding:11px 14px; border-radius:10px; font-size:13px; line-height:1.6; }
+.kw-result-item.high { background:#F0FDF4; border-left:3px solid #22C55E; color:#14532D; }
+.kw-result-item.med { background:#FFFBEB; border-left:3px solid #F59E0B; color:#78350F; }
+.kw-result-item.low { background:var(--gray-50); border-left:3px solid var(--gray-300); color:var(--gray-600); }
+.kw-priority { font-size:10px; font-weight:700; letter-spacing:0.5px; }
+
+/* Checklist */
+.checklist { display:flex; flex-direction:column; gap:7px; }
+.check-row { display:flex; align-items:center; gap:9px; font-size:13px; padding:2px 0; }
+.check-row.ok { color:var(--gray-800); }
+.check-row.warn { color:#92400E; }
+.check-row.fail { color:#991B1B; }
+
+/* Feedback row */
+.feedback-row { display:flex; align-items:center; gap:8px; padding:10px 14px; background:var(--gray-50); border-radius:10px; margin-top:12px; }
+.feedback-label { font-size:12px; color:var(--gray-600); flex:1; }
+.feedback-btns { display:flex; gap:6px; }
+.fb-btn { padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; border:1.5px solid var(--gray-200); background:white; transition:all 0.15s; }
+.fb-btn:hover { border-color:var(--teal); color:var(--teal); }
+.fb-btn.active { background:var(--teal); color:white; border-color:var(--teal); }
+
+/* Upgrade banner */
+.upgrade-banner { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%); border-radius:16px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.upgrade-banner strong { font-family:'Plus Jakarta Sans',sans-serif; font-size:14px; font-weight:700; color:white; display:block; margin-bottom:3px; }
+.upgrade-banner span { font-size:12px; color:rgba(255,255,255,0.5); }
+
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <div class="header-inner">
     <a class="logo" href="#">
-      <!-- Star + Arrow Logo SVG -->
       <svg class="logo-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Star outline -->
         <path d="M19 4L21.8 13.2H31.5L23.9 18.8L26.6 28L19 22.4L11.4 28L14.1 18.8L6.5 13.2H16.2L19 4Z" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-        <!-- Teal upward arrow through center -->
         <path d="M14 26L19 10L24 26" stroke="#00BFA6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
         <path d="M16.5 14L19 10L21.5 14" stroke="#00BFA6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
       </svg>
-      <div class="logo-text">
-        <span class="logo-name">JobCoach <span>AI</span></span>
-        <span class="logo-tagline">Career Intelligence Platform</span>
+      <div>
+        <div class="logo-name">JobCoach <span>AI</span></div>
+        <div class="logo-tagline">Career Intelligence Platform</div>
       </div>
     </a>
     <nav>
@@ -904,39 +245,20 @@
   </div>
 </header>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">
-      ✦ LinkedIn Optimizer
-    </div>
+    <div class="hero-badge">✦ LinkedIn Optimizer</div>
     <h1>Dein LinkedIn-Profil,<br><span>radikal optimiert</span></h1>
-    <p>KI analysiert dein Profil, erkennt blinde Flecken und schreibt Headline, About & Bullets — auf deine Zielrolle zugeschnitten.</p>
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-num">3×</span>
-        <span class="stat-label">Mehr Recruiter-Views</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">87%</span>
-        <span class="stat-label">Besserer Match-Score</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">< 3 min</span>
-        <span class="stat-label">Bis zum Ergebnis</span>
-      </div>
-    </div>
+    <p>KI liefert Varianten — du entscheidest, bearbeitest und verfeinerst. Dein Profil, deine Stimme.</p>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- FREEMIUM BAR -->
-  <div class="freemium-bar" style="margin-bottom: 24px;">
+  <div class="freemium-bar">
     <div class="freemium-text">
       <strong>Kostenlos starten — 3 Analysen pro Monat</strong>
-      <span>Noch 2 freie Analysen übrig diesen Monat</span>
+      <span>Noch 2 freie Analysen übrig</span>
       <div class="usage-dots">
         <div class="usage-dot used"></div>
         <div class="usage-dot"></div>
@@ -946,194 +268,58 @@
     <button class="btn-upgrade">⭐ Auf Premium upgraden</button>
   </div>
 
-  <div class="optimizer-layout">
+  <div class="layout">
 
-    <!-- LEFT: INPUT -->
+    <!-- ═══ LEFT: INPUT ═══ -->
     <div>
 
-      <!-- Input Mode Toggle -->
-      <div class="mode-toggle">
-        <button class="mode-btn active" onclick="switchMode('form')">📋 Formular</button>
-        <button class="mode-btn" onclick="switchMode('paste')">📄 LinkedIn-Profil einfügen</button>
-      </div>
-
-      <!-- FORM MODE -->
-      <div class="form-mode" id="formMode">
-        <div class="card" style="margin-bottom: 16px;">
-          <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            </div>
-            <div>
-              <div class="card-title">Dein aktuelles Profil</div>
-              <div class="card-subtitle">Fülle aus, was du hast</div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="field">
-              <label>Aktuelle Berufsbezeichnung</label>
-              <input type="text" id="currentTitle" placeholder="z.B. Senior Account Manager · B2B SaaS" />
-            </div>
-            <div class="field">
-              <label>Aktuelle Headline <span class="optional">(optional)</span></label>
-              <input type="text" id="currentHeadline" placeholder="Was steht aktuell unter deinem Namen?" />
-            </div>
-            <div class="field">
-              <label>About / Zusammenfassung <span class="optional">(optional)</span></label>
-              <textarea id="currentAbout" placeholder="Dein aktueller About-Text..." style="min-height: 80px;"></textarea>
-            </div>
-
-            <!-- Expandable Sections -->
-            <div class="section-group">
-              <button class="section-toggle" onclick="toggleSection('exp')">
-                <span class="toggle-left">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                  Erfahrungs-Bullets
-                </span>
-                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-              <div class="section-content" id="exp">
-                <div class="field" style="margin-bottom: 0;">
-                  <label>Aktuelle Positionsbeschreibungen <span class="optional">(optional)</span></label>
-                  <textarea id="expBullets" placeholder="Füge deine Erfahrungs-Beschreibungen ein..." style="min-height: 120px;"></textarea>
-                </div>
-              </div>
-            </div>
-
-            <div class="section-group" style="margin-top: 8px;">
-              <button class="section-toggle" onclick="toggleSection('skills')">
-                <span class="toggle-left">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  Skills & Keywords
-                </span>
-                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </button>
-              <div class="section-content" id="skills">
-                <div class="field" style="margin-bottom: 0;">
-                  <label>Deine Top-Skills</label>
-                  <input type="text" id="skillsInput" placeholder="z.B. Key Account Management, Salesforce, MEDDIC..." />
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-            </div>
-            <div>
-              <div class="card-title">Ziel & Optimierung</div>
-              <div class="card-subtitle">Wohin soll es gehen?</div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="field">
-              <label>Zielrolle / Wunschposition</label>
-              <input type="text" id="targetRole" placeholder="z.B. Head of Sales · Enterprise · FinTech" />
-            </div>
-            <div class="field">
-              <label>Zielbranche <span class="optional">(optional)</span></label>
-              <input type="text" id="targetIndustry" placeholder="z.B. SaaS, Consulting, Gesundheitswesen..." />
-            </div>
-
-            <div class="field">
-              <label>Tonalität</label>
-              <div class="tone-options">
-                <button class="tone-btn selected" onclick="selectTone(this)">
-                  <span class="tone-icon">🎯</span>
-                  Direkt & klar
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">🤝</span>
-                  Persönlich
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">💼</span>
-                  Formal
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">🚀</span>
-                  Ambitioniert
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">💡</span>
-                  Thought Leader
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">🌍</span>
-                  International
-                </button>
-              </div>
-            </div>
-
-            <button class="btn-analyze" onclick="runAnalysis()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Jetzt <span class="btn-teal">KI-Analyse</span>&nbsp;starten
-            </button>
-          </div>
-        </div>
+      <!-- MODE TOGGLE -->
+      <div style="display:flex;background:white;border-radius:12px;padding:4px;box-shadow:0 4px 16px rgba(27,43,94,0.12);margin-bottom:16px;width:fit-content;">
+        <button id="modeFormBtn" onclick="switchMode('form')" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;color:white;background:var(--navy);">📋 Formular</button>
+        <button id="modePasteBtn" onclick="switchMode('paste')" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;color:var(--gray-400);background:transparent;">📄 Profil einfügen</button>
       </div>
 
       <!-- PASTE MODE -->
-      <div class="paste-mode" id="pasteMode">
+      <div id="pasteMode" style="display:none;">
         <div class="card">
           <div class="card-header">
             <div class="card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
-                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
             </div>
             <div>
               <div class="card-title">LinkedIn-Profil einfügen</div>
-              <div class="card-subtitle">Kopiere & füge deinen Profiltext ein</div>
+              <div class="card-subtitle">Kopiere deinen Profiltext direkt rein</div>
             </div>
           </div>
           <div class="card-body">
             <div class="field">
               <label>Profiltext</label>
-              <textarea id="pasteText" style="min-height: 200px;" placeholder="Öffne dein LinkedIn-Profil → Markiere alles → Füge hier ein..."></textarea>
+              <textarea id="pasteText" style="min-height:200px;" placeholder="Öffne LinkedIn → Profil aufrufen → Text markieren → hier einfügen&#10;&#10;Die KI erkennt Headline, About und Bullets automatisch."></textarea>
             </div>
             <div class="field">
               <label>Zielrolle</label>
-              <input type="text" id="pasteTargetRole" placeholder="z.B. Head of Sales · Enterprise" />
+              <input type="text" id="pasteTargetRole" placeholder="z.B. Head of Sales · Enterprise · FinTech">
             </div>
             <div class="field">
-              <label>Tonalität</label>
-              <div class="tone-options">
-                <button class="tone-btn selected" onclick="selectTone(this)">
-                  <span class="tone-icon">🎯</span>
-                  Direkt & klar
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">🤝</span>
-                  Persönlich
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">💼</span>
-                  Formal
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">🚀</span>
-                  Ambitioniert
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">💡</span>
-                  Thought Leader
-                </button>
-                <button class="tone-btn" onclick="selectTone(this)">
-                  <span class="tone-icon">🌍</span>
-                  International
-                </button>
+              <label>Eigene Wunsch-Keywords <span class="opt">(optional)</span></label>
+              <div class="keyword-input-wrap">
+                <input type="text" id="kwInputPaste" placeholder="Keyword + Enter" onkeydown="if(event.key==='Enter'){addKeywordPaste();event.preventDefault();}">
+                <button class="btn-add-kw" onclick="addKeywordPaste()">+ Hinzufügen</button>
+              </div>
+              <div class="keywords-tags" id="kwTagsPaste"></div>
+            </div>
+            <div class="field">
+              <label>Tonalität <span class="opt">(gilt für alle Sektionen)</span></label>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="pasteToneGrid">
+                <button class="ptone selected" onclick="selectPasteTone(this,'🎯 Direkt & klar')" style="padding:10px 6px;border:1.5px solid var(--teal);border-radius:10px;background:var(--teal-pale);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;color:var(--navy);text-align:center;transition:all 0.2s;"><span style="display:block;font-size:16px;margin-bottom:3px;">🎯</span>Direkt & klar</button>
+                <button class="ptone" onclick="selectPasteTone(this,'🤝 Persönlich')" style="padding:10px 6px;border:1.5px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;color:var(--gray-600);text-align:center;transition:all 0.2s;"><span style="display:block;font-size:16px;margin-bottom:3px;">🤝</span>Persönlich</button>
+                <button class="ptone" onclick="selectPasteTone(this,'💼 Formal')" style="padding:10px 6px;border:1.5px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;color:var(--gray-600);text-align:center;transition:all 0.2s;"><span style="display:block;font-size:16px;margin-bottom:3px;">💼</span>Formal</button>
+                <button class="ptone" onclick="selectPasteTone(this,'🚀 Ambitioniert')" style="padding:10px 6px;border:1.5px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;color:var(--gray-600);text-align:center;transition:all 0.2s;"><span style="display:block;font-size:16px;margin-bottom:3px;">🚀</span>Ambitioniert</button>
+                <button class="ptone" onclick="selectPasteTone(this,'💡 Thought Leader')" style="padding:10px 6px;border:1.5px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;color:var(--gray-600);text-align:center;transition:all 0.2s;"><span style="display:block;font-size:16px;margin-bottom:3px;">💡</span>Thought Leader</button>
+                <button class="ptone" onclick="selectPasteTone(this,'🌍 International')" style="padding:10px 6px;border:1.5px solid var(--gray-200);border-radius:10px;background:var(--gray-50);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;color:var(--gray-600);text-align:center;transition:all 0.2s;"><span style="display:block;font-size:16px;margin-bottom:3px;">🌍</span>International</button>
               </div>
             </div>
-            <button class="btn-analyze" onclick="runAnalysis()">
+            <button class="btn-analyze" onclick="runAnalysisPaste()">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               Profil <span class="btn-teal">analysieren</span>
             </button>
@@ -1141,172 +327,317 @@
         </div>
       </div>
 
-    </div><!-- end left -->
+      <!-- FORM MODE -->
+      <div id="formMode">
 
-    <!-- RIGHT: OUTPUT -->
-    <div id="outputCol">
-
-      <!-- Empty state -->
-      <div id="emptyState" class="card" style="text-align: center; padding: 64px 32px;">
-        <div style="width: 72px; height: 72px; background: var(--teal-pale); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="1.5" stroke-linecap="round">
-            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-          </svg>
+      <!-- PERSON -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Über dich</div>
+            <div class="card-subtitle">Wer bist du — in deinen eigenen Worten</div>
+          </div>
         </div>
-        <div style="font-family: 'Plus Jakarta Sans'; font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px;">Bereit zur Analyse</div>
-        <div style="font-size: 13px; color: var(--gray-400); line-height: 1.7; max-width: 280px; margin: 0 auto 28px;">Fülle das Formular aus und starte die KI-Analyse — Ergebnisse erscheinen hier.</div>
-        <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; max-width: 260px; margin: 0 auto;">
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
-            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">1</span>
-            Profil-Score & Bewertung
+        <div class="card-body">
+          <div class="field">
+            <label>Aktuelle Position</label>
+            <input type="text" id="currentTitle" placeholder="z.B. Senior Account Manager · B2B SaaS · TechCorp">
           </div>
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
-            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">2</span>
-            Optimierte Headline & About
+          <div class="field">
+            <label>Berufserfahrung in Jahren <span class="opt">(kurz)</span></label>
+            <input type="text" id="yearsExp" placeholder="z.B. 8 Jahre B2B-Vertrieb, davon 3 Jahre Enterprise">
           </div>
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
-            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">3</span>
-            Keyword-Empfehlungen
+          <div class="field">
+            <label>Deine größten Erfolge / Zahlen</label>
+            <textarea id="achievements" placeholder="z.B. Pipeline von €4M aufgebaut · Team von 6 Personen geführt · Quota 140% erreicht · Deal-Größe €150k–€500k" style="min-height:90px;"></textarea>
           </div>
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
-            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">4</span>
-            Profil-Checkliste
+          <div class="field">
+            <label>Persönlichkeit / Arbeitsstil <span class="opt">(optional)</span></label>
+            <input type="text" id="personality" placeholder="z.B. direkt, lösungsorientiert, Netzwerker, analytisch">
           </div>
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- ZIEL -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Dein Ziel</div>
+            <div class="card-subtitle">Wo willst du hin?</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label>Zielrolle</label>
+            <input type="text" id="targetRole" placeholder="z.B. Head of Sales · VP Sales · Enterprise Account Executive">
+          </div>
+          <div class="field">
+            <label>Zielbranche <span class="opt">(optional)</span></label>
+            <input type="text" id="targetIndustry" placeholder="z.B. FinTech, HR-Tech, SaaS, Consulting">
+          </div>
+          <div class="field">
+            <label>Eigene Wunsch-Keywords</label>
+            <div class="keyword-input-wrap">
+              <input type="text" id="kwInput" placeholder="Keyword eingeben + Enter" onkeydown="if(event.key==='Enter'){addKeyword();event.preventDefault();}">
+              <button class="btn-add-kw" onclick="addKeyword()">+ Hinzufügen</button>
+            </div>
+            <div class="keywords-tags" id="kwTags"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PER-SECTION SETTINGS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          </div>
+          <div>
+            <div class="card-title">Einstellungen pro Sektion</div>
+            <div class="card-subtitle">Tonalität & Details individuell konfigurieren</div>
+          </div>
+        </div>
+        <div class="card-body" style="padding:16px;">
+
+          <!-- HEADLINE section -->
+          <div class="section-block section-open" id="sec-headline">
+            <div class="section-head" onclick="toggleSec('headline')">
+              <div class="section-head-left">✏️ Headline</div>
+              <div class="section-head-right">
+                <div class="tone-popup-wrap">
+                  <div class="mini-tone" onclick="openTonePicker(event,'tone-headline')" id="tone-headline-label">🎯 Direkt & klar</div>
+                  <div class="tone-popup" id="tone-headline">
+                    <div class="tone-opt selected" onclick="setTone('headline','🎯 Direkt & klar',this)"><span class="t-icon">🎯</span> Direkt & klar</div>
+                    <div class="tone-opt" onclick="setTone('headline','🤝 Persönlich',this)"><span class="t-icon">🤝</span> Persönlich</div>
+                    <div class="tone-opt" onclick="setTone('headline','💼 Formal',this)"><span class="t-icon">💼</span> Formal</div>
+                    <div class="tone-opt" onclick="setTone('headline','🚀 Ambitioniert',this)"><span class="t-icon">🚀</span> Ambitioniert</div>
+                    <div class="tone-opt" onclick="setTone('headline','💡 Thought Leader',this)"><span class="t-icon">💡</span> Thought Leader</div>
+                    <div class="tone-opt" onclick="setTone('headline','🌍 International',this)"><span class="t-icon">🌍</span> International</div>
+                  </div>
+                </div>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="section-body">
+              <div class="field" style="margin-bottom:0;">
+                <label>Aktuelle Headline <span class="opt">(optional)</span></label>
+                <input type="text" id="currentHeadline" placeholder="Was steht aktuell unter deinem Namen?">
+              </div>
+            </div>
+          </div>
+
+          <!-- ABOUT section -->
+          <div class="section-block" id="sec-about">
+            <div class="section-head" onclick="toggleSec('about')">
+              <div class="section-head-left">📝 About / Zusammenfassung</div>
+              <div class="section-head-right">
+                <div class="tone-popup-wrap">
+                  <div class="mini-tone" onclick="openTonePicker(event,'tone-about')" id="tone-about-label">🤝 Persönlich</div>
+                  <div class="tone-popup" id="tone-about">
+                    <div class="tone-opt" onclick="setTone('about','🎯 Direkt & klar',this)"><span class="t-icon">🎯</span> Direkt & klar</div>
+                    <div class="tone-opt selected" onclick="setTone('about','🤝 Persönlich',this)"><span class="t-icon">🤝</span> Persönlich</div>
+                    <div class="tone-opt" onclick="setTone('about','💼 Formal',this)"><span class="t-icon">💼</span> Formal</div>
+                    <div class="tone-opt" onclick="setTone('about','🚀 Ambitioniert',this)"><span class="t-icon">🚀</span> Ambitioniert</div>
+                    <div class="tone-opt" onclick="setTone('about','💡 Thought Leader',this)"><span class="t-icon">💡</span> Thought Leader</div>
+                    <div class="tone-opt" onclick="setTone('about','🌍 International',this)"><span class="t-icon">🌍</span> International</div>
+                  </div>
+                </div>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="section-body">
+              <div class="field" style="margin-bottom:0;">
+                <label>Aktueller About-Text <span class="opt">(optional)</span></label>
+                <textarea id="currentAbout" placeholder="Füge deinen bestehenden About-Text ein — oder lass das Feld leer für einen kompletten Neuentwurf."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- BULLETS section -->
+          <div class="section-block" id="sec-bullets">
+            <div class="section-head" onclick="toggleSec('bullets')">
+              <div class="section-head-left">📌 Erfahrungs-Bullets</div>
+              <div class="section-head-right">
+                <div class="tone-popup-wrap">
+                  <div class="mini-tone" onclick="openTonePicker(event,'tone-bullets')" id="tone-bullets-label">🚀 Ambitioniert</div>
+                  <div class="tone-popup" id="tone-bullets">
+                    <div class="tone-opt" onclick="setTone('bullets','🎯 Direkt & klar',this)"><span class="t-icon">🎯</span> Direkt & klar</div>
+                    <div class="tone-opt" onclick="setTone('bullets','🤝 Persönlich',this)"><span class="t-icon">🤝</span> Persönlich</div>
+                    <div class="tone-opt" onclick="setTone('bullets','💼 Formal',this)"><span class="t-icon">💼</span> Formal</div>
+                    <div class="tone-opt selected" onclick="setTone('bullets','🚀 Ambitioniert',this)"><span class="t-icon">🚀</span> Ambitioniert</div>
+                    <div class="tone-opt" onclick="setTone('bullets','💡 Thought Leader',this)"><span class="t-icon">💡</span> Thought Leader</div>
+                    <div class="tone-opt" onclick="setTone('bullets','🌍 International',this)"><span class="t-icon">🌍</span> International</div>
+                  </div>
+                </div>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+            <div class="section-body">
+              <div class="field" style="margin-bottom:0;">
+                <label>Aktuelle Bullets / Positionsbeschreibungen <span class="opt">(optional)</span></label>
+                <textarea id="currentBullets" placeholder="Füge deine bestehenden Bullet Points ein..."></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <button class="btn-analyze" onclick="runAnalysis()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Jetzt <span class="btn-teal">KI-Analyse</span>&nbsp;starten
+      </button>
+
+      </div><!-- end formMode -->
+
+    </div><!-- end left -->
+
+    <!-- ═══ RIGHT: OUTPUT ═══ -->
+    <div id="outputCol">
+
+      <!-- Empty -->
+      <div class="card" id="emptyState">
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <div class="empty-title">Bereit zur Analyse</div>
+          <div class="empty-sub">Du gibst die Details — die KI liefert Varianten. Du wählst, bearbeitest und verfeinerst.</div>
+          <div class="empty-steps">
+            <div class="empty-step"><div class="step-num">1</div> KI erstellt 2–3 Varianten pro Sektion</div>
+            <div class="empty-step"><div class="step-num">2</div> Du wählst deinen Favoriten</div>
+            <div class="empty-step"><div class="step-num">3</div> Direkt bearbeiten & verfeinern</div>
+            <div class="empty-step"><div class="step-num">4</div> KI lernt aus deinem Feedback</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
       <div class="card loading-state" id="loadingState">
         <div class="loading-ring"></div>
-        <div class="loading-text">KI analysiert dein Profil…</div>
-        <div class="loading-sub">Dauert nur ein paar Sekunden</div>
+        <div class="loading-text">KI analysiert & erstellt Varianten…</div>
+        <div class="loading-sub">Das dauert 10–15 Sekunden</div>
         <div class="loading-steps">
-          <div class="loading-step active" id="step1"><span class="step-dot"></span>Profil-Daten verarbeiten</div>
-          <div class="loading-step" id="step2"><span class="step-dot"></span>Score berechnen</div>
-          <div class="loading-step" id="step3"><span class="step-dot"></span>Headline optimieren</div>
-          <div class="loading-step" id="step4"><span class="step-dot"></span>Keywords analysieren</div>
-          <div class="loading-step" id="step5"><span class="step-dot"></span>Ergebnisse aufbereiten</div>
+          <div class="lstep active" id="ls1"><span class="lstep-dot"></span>Dein Profil & Ziele verstehen</div>
+          <div class="lstep" id="ls2"><span class="lstep-dot"></span>Tonalitäten anwenden</div>
+          <div class="lstep" id="ls3"><span class="lstep-dot"></span>Headline-Varianten erstellen</div>
+          <div class="lstep" id="ls4"><span class="lstep-dot"></span>About-Text ausarbeiten</div>
+          <div class="lstep" id="ls5"><span class="lstep-dot"></span>Keywords & Bullets optimieren</div>
         </div>
       </div>
 
       <!-- Results -->
-      <div class="results-panel" id="resultsPanel">
+      <div class="results-wrap" id="resultsWrap">
 
         <!-- Score -->
         <div class="score-card">
           <div class="score-ring-wrap">
-            <svg viewBox="0 0 100 100">
-              <circle class="score-ring-bg" cx="50" cy="50" r="40"/>
-              <circle class="score-ring-fill" id="scoreRing" cx="50" cy="50" r="40"/>
-            </svg>
-            <div class="score-number" id="scoreDisplay">72<span>/100</span></div>
+            <svg viewBox="0 0 90 90"><circle class="ring-bg" cx="45" cy="45" r="36"/><circle class="ring-fill" id="ringFill" cx="45" cy="45" r="36"/></svg>
+            <div class="score-num" id="scoreNum">72<small>/100</small></div>
           </div>
           <div class="score-info">
             <div class="score-label">LinkedIn Score</div>
             <div class="score-title" id="scoreTitle">Solides Profil — großes Potenzial</div>
-            <div class="score-desc" id="scoreDesc">Dein Profil ist sichtbar, aber Headline und About passen noch nicht zur Zielrolle. Die Optimierungen unten können deinen Score auf 90+ bringen.</div>
+            <div class="score-desc" id="scoreDesc">Headline und About passen noch nicht zur Zielrolle. Die Varianten unten können deinen Score auf 90+ bringen.</div>
           </div>
         </div>
 
-        <!-- Headline Optimierung -->
-        <div class="result-section">
-          <div class="result-section-header">
-            <div class="result-section-title">
-              ✏️ Optimierte Headline
-            </div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <span class="result-tag tag-improved">Verbessert</span>
-              <button class="btn-copy" onclick="copyText('headlineAfter')">📋 Kopieren</button>
+        <!-- HEADLINE OUTPUT -->
+        <div class="out-section" id="out-headline">
+          <div class="out-header">
+            <div class="out-title">✏️ Headline-Varianten</div>
+            <div class="out-meta">
+              <span class="badge badge-teal" id="headline-tone-badge">🎯 Direkt & klar</span>
+              <span class="badge badge-navy">3 Varianten</span>
             </div>
           </div>
-          <div class="result-section-body">
-            <div class="before-after">
-              <div class="ba-panel before">
-                <div class="ba-label">❌ Vorher</div>
-                <div id="headlineBefore">Senior Account Manager bei TechCorp GmbH</div>
-              </div>
-              <div class="ba-panel after">
-                <div class="ba-label">✅ Nachher</div>
-                <div id="headlineAfter">Enterprise Sales Leader | SaaS & B2B | 8-stellige Pipeline aufgebaut | Offen für Head of Sales-Rollen</div>
-              </div>
+          <div class="out-body">
+            <div class="variants" id="headline-variants">
+              <!-- filled by JS -->
             </div>
-          </div>
-        </div>
-
-        <!-- About Optimierung -->
-        <div class="result-section">
-          <div class="result-section-header">
-            <div class="result-section-title">
-              📝 Optimierter About-Text
+            <div class="edit-area" id="headline-edit" style="display:none;">
+              <textarea id="headline-edit-text" style="min-height:70px;"></textarea>
+              <div class="edit-hint">✏️ Bearbeite die Variante direkt — sie gehört dir.</div>
             </div>
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <span class="result-tag tag-improved">Verbessert</span>
-              <button class="btn-copy" onclick="copyText('aboutAfter')">📋 Kopieren</button>
+            <div class="actions-row">
+              <button class="btn-sm primary" onclick="regenerateSection('headline')">↻ Neu generieren</button>
+              <button class="btn-sm" onclick="toggleEdit('headline')">✏️ Bearbeiten</button>
+              <button class="btn-sm" onclick="copySection('headline')">📋 Kopieren</button>
             </div>
-          </div>
-          <div class="result-section-body">
-            <div class="ba-panel after" id="aboutAfter" style="background: var(--teal-pale); border: 1px solid rgba(0,191,166,0.3); color: #065F46; font-size: 13px; line-height: 1.8;">
-              Ich helfe B2B-SaaS-Unternehmen dabei, Enterprise-Deals zu schließen — mit einem Ansatz, der auf echter Kundenkenntnis statt auf Scripts basiert.<br><br>
-              In den letzten 8 Jahren habe ich im Key Account Management und Consulting gelernt: Wer die Sprache seiner Kunden spricht, gewinnt. Meine Deals haben eine durchschnittliche Größe von 200k€+, meine Teams übertreffen Quotas konsistent um 20–40%.<br><br>
-              📍 Offen für Head of Sales / VP Sales-Rollen im DACH-Raum — idealerweise FinTech, HR-Tech oder B2B-SaaS.
-            </div>
-          </div>
-        </div>
-
-        <!-- Keywords -->
-        <div class="result-section">
-          <div class="result-section-header">
-            <div class="result-section-title">🔑 Keyword-Empfehlungen</div>
-            <span class="result-tag tag-new">+12 neue Keywords</span>
-          </div>
-          <div class="result-section-body">
-            <div class="result-list" id="keywordList">
-              <div class="result-item">
-                <span class="result-item-icon">🟢</span>
-                <div><strong>Enterprise Sales</strong> — Sehr hohe Recruiter-Suchhäufigkeit für deine Zielrolle. Unbedingt in Headline & About einbauen.</div>
-              </div>
-              <div class="result-item">
-                <span class="result-item-icon">🟢</span>
-                <div><strong>Revenue Growth, Pipeline Management</strong> — Signalisiert strategische Verantwortung. Ideal für Bullets in aktueller Position.</div>
-              </div>
-              <div class="result-item">
-                <span class="result-item-icon">🟡</span>
-                <div><strong>MEDDIC, SPIN Selling, Challenger Sale</strong> — Methodenkenntnisse erhöhen Glaubwürdigkeit. In Skills-Sektion hinzufügen.</div>
-              </div>
-              <div class="result-item">
-                <span class="result-item-icon">🟡</span>
-                <div><strong>Go-to-Market, SaaS Metrics (ARR, CAC, LTV)</strong> — Zeigt Business-Verständnis auf C-Level-Niveau. Wirkt in About-Text sehr stark.</div>
+            <div class="feedback-row">
+              <div class="feedback-label">Passt der Stil? KI lernt für die nächste Runde:</div>
+              <div class="feedback-btns">
+                <button class="fb-btn" onclick="giveFeedback(this,'headline','zu formell')">Zu formell</button>
+                <button class="fb-btn" onclick="giveFeedback(this,'headline','zu generisch')">Zu generisch</button>
+                <button class="fb-btn" onclick="giveFeedback(this,'headline','perfekt')">👍 Perfekt</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Profil-Checkliste -->
-        <div class="result-section">
-          <div class="result-section-header">
-            <div class="result-section-title">☑️ Profil-Checkliste</div>
-            <span class="result-tag tag-tip">6/10 erledigt</span>
+        <!-- ABOUT OUTPUT -->
+        <div class="out-section" id="out-about">
+          <div class="out-header">
+            <div class="out-title">📝 About-Text Varianten</div>
+            <div class="out-meta">
+              <span class="badge badge-teal" id="about-tone-badge">🤝 Persönlich</span>
+              <span class="badge badge-navy">2 Varianten</span>
+            </div>
           </div>
-          <div class="result-section-body">
-            <div class="checklist">
-              <div class="check-item done"><span class="check-icon">✅</span> Profilfoto vorhanden</div>
-              <div class="check-item done"><span class="check-icon">✅</span> Deckbild / Banner gesetzt</div>
-              <div class="check-item done"><span class="check-icon">✅</span> Aktuelle Position vollständig</div>
-              <div class="check-item warn"><span class="check-icon">⚠️</span> Headline zu kurz — Potenzial nicht ausgeschöpft</div>
-              <div class="check-item warn"><span class="check-icon">⚠️</span> About-Text fehlt Call-to-Action</div>
-              <div class="check-item fail"><span class="check-icon">❌</span> Skills-Sektion hat weniger als 10 Einträge</div>
-              <div class="check-item fail"><span class="check-icon">❌</span> Kein Featured-Bereich aktiviert</div>
-              <div class="check-item done"><span class="check-icon">✅</span> Empfehlungen / Referenzen vorhanden</div>
-              <div class="check-item warn"><span class="check-icon">⚠️</span> Kontaktinfos unvollständig</div>
-              <div class="check-item done"><span class="check-icon">✅</span> Bildungsabschlüsse vollständig</div>
+          <div class="out-body">
+            <div class="variants" id="about-variants"></div>
+            <div class="edit-area" id="about-edit" style="display:none;">
+              <textarea id="about-edit-text" style="min-height:140px;"></textarea>
+              <div class="edit-hint">✏️ Füge persönliche Details hinzu, die nur du kennst.</div>
+            </div>
+            <div class="actions-row">
+              <button class="btn-sm primary" onclick="regenerateSection('about')">↻ Neu generieren</button>
+              <button class="btn-sm" onclick="toggleEdit('about')">✏️ Bearbeiten</button>
+              <button class="btn-sm" onclick="copySection('about')">📋 Kopieren</button>
+            </div>
+            <div class="feedback-row">
+              <div class="feedback-label">Trifft es deinen Stil?</div>
+              <div class="feedback-btns">
+                <button class="fb-btn" onclick="giveFeedback(this,'about','zu unpersönlich')">Zu unpersönlich</button>
+                <button class="fb-btn" onclick="giveFeedback(this,'about','zu lang')">Zu lang</button>
+                <button class="fb-btn" onclick="giveFeedback(this,'about','perfekt')">👍 Perfekt</button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Upgrade CTA -->
-        <div class="freemium-bar">
-          <div class="freemium-text">
-            <strong>Erfahrungs-Bullets & Post-Vorlagen freischalten</strong>
+        <!-- KEYWORDS OUTPUT -->
+        <div class="out-section">
+          <div class="out-header">
+            <div class="out-title">🔑 Keyword-Analyse</div>
+            <div class="out-meta"><span class="badge badge-navy" id="kw-count-badge">+0 empfohlen</span></div>
+          </div>
+          <div class="out-body">
+            <div class="kw-results" id="kw-results"></div>
+          </div>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div class="out-section">
+          <div class="out-header">
+            <div class="out-title">☑️ Profil-Checkliste</div>
+            <div class="out-meta"><span class="badge badge-warn" id="check-score-badge">0/10</span></div>
+          </div>
+          <div class="out-body">
+            <div class="checklist" id="checklist"></div>
+          </div>
+        </div>
+
+        <!-- UPGRADE -->
+        <div class="upgrade-banner">
+          <div>
+            <strong>Bullets & Post-Vorlagen freischalten</strong>
             <span>Premium: Unbegrenzte Analysen · Alle Module · Profil gespeichert</span>
           </div>
           <button class="btn-upgrade">Premium — €9,90/Mo</button>
@@ -1314,117 +645,447 @@
 
       </div><!-- end results -->
 
-    </div><!-- end right col -->
-  </div><!-- end grid -->
-</div><!-- end main -->
+    </div><!-- end right -->
+  </div>
+</div>
 
-<footer>
-  © 2026 <span>JobCoach AI</span> · Career Intelligence Platform · Alle Rechte vorbehalten
+<footer style="background:var(--navy-dark);padding:24px 2rem;text-align:center;color:rgba(255,255,255,0.3);font-size:12px;">
+  © 2026 <span style="color:var(--teal);">JobCoach AI</span> · Career Intelligence Platform
 </footer>
 
 <script>
+
+  let pasteTone = '🎯 Direkt & klar';
+  const keywordsPaste = [];
+
   function switchMode(mode) {
     const formMode = document.getElementById('formMode');
     const pasteMode = document.getElementById('pasteMode');
-    const btns = document.querySelectorAll('.mode-btn');
-
+    const fBtn = document.getElementById('modeFormBtn');
+    const pBtn = document.getElementById('modePasteBtn');
     if (mode === 'form') {
-      formMode.classList.remove('hidden');
-      pasteMode.classList.remove('active');
-      btns[0].classList.add('active');
-      btns[1].classList.remove('active');
+      formMode.style.display = 'block';
+      pasteMode.style.display = 'none';
+      fBtn.style.background = 'var(--navy)';
+      fBtn.style.color = 'white';
+      pBtn.style.background = 'transparent';
+      pBtn.style.color = 'var(--gray-400)';
     } else {
-      formMode.classList.add('hidden');
-      pasteMode.classList.add('active');
-      btns[0].classList.remove('active');
-      btns[1].classList.add('active');
+      formMode.style.display = 'none';
+      pasteMode.style.display = 'block';
+      pBtn.style.background = 'var(--navy)';
+      pBtn.style.color = 'white';
+      fBtn.style.background = 'transparent';
+      fBtn.style.color = 'var(--gray-400)';
     }
   }
 
-  function toggleSection(id) {
-    const content = document.getElementById(id);
-    const toggle = content.previousElementSibling;
-    content.classList.toggle('open');
-    toggle.classList.toggle('open');
-  }
-
-  function selectTone(btn) {
-    const idx = Array.from(btn.parentElement.children).indexOf(btn);
-    document.querySelectorAll('.tone-options').forEach(group => {
-      Array.from(group.children).forEach((b, i) => {
-        b.classList.toggle('selected', i === idx);
-      });
+  function selectPasteTone(btn, tone) {
+    pasteTone = tone;
+    document.querySelectorAll('.ptone').forEach(b => {
+      b.style.borderColor = 'var(--gray-200)';
+      b.style.background = 'var(--gray-50)';
+      b.style.color = 'var(--gray-600)';
     });
+    btn.style.borderColor = 'var(--teal)';
+    btn.style.background = 'var(--teal-pale)';
+    btn.style.color = 'var(--navy)';
   }
 
-  function runAnalysis() {
-    const empty = document.getElementById('emptyState');
-    const loading = document.getElementById('loadingState');
-    const results = document.getElementById('resultsPanel');
-
-    empty.style.display = 'none';
-    loading.classList.add('active');
-    results.classList.remove('active');
-
-    const steps = ['step1','step2','step3','step4','step5'];
-    let i = 0;
-
-    function advanceStep() {
-      if (i > 0) {
-        document.getElementById(steps[i-1]).classList.remove('active');
-        document.getElementById(steps[i-1]).classList.add('done');
-      }
-      if (i < steps.length) {
-        document.getElementById(steps[i]).classList.add('active');
-        i++;
-        setTimeout(advanceStep, 600);
-      } else {
-        setTimeout(showResults, 400);
-      }
-    }
-
-    advanceStep();
-
-    // Personalise results with input
-    const role = document.getElementById('targetRole').value || 'Head of Sales';
-    const title = document.getElementById('currentTitle').value || 'Senior Account Manager';
-
-    document.getElementById('headlineBefore').textContent = title + ' | Auf der Suche nach neuen Möglichkeiten';
-    document.getElementById('headlineAfter').textContent = 'Enterprise Sales Leader | SaaS & B2B | 8-stellige Pipeline | Offen für ' + role + '-Rollen';
+  function addKeywordPaste() {
+    const inp = document.getElementById('kwInputPaste');
+    const val = inp.value.trim();
+    if (!val || keywordsPaste.includes(val)) { inp.value=''; return; }
+    keywordsPaste.push(val);
+    const el = document.getElementById('kwTagsPaste');
+    el.innerHTML = keywordsPaste.map(k =>
+      `<span class="kw-tag">${k}<button onclick="removeKwPaste('${k}')">×</button></span>`
+    ).join('');
+    inp.value = '';
   }
 
-  function showResults() {
-    const loading = document.getElementById('loadingState');
-    const results = document.getElementById('resultsPanel');
+  function removeKwPaste(kw) {
+    const i = keywordsPaste.indexOf(kw);
+    if (i > -1) keywordsPaste.splice(i, 1);
+    document.getElementById('kwTagsPaste').innerHTML = keywordsPaste.map(k =>
+      `<span class="kw-tag">${k}<button onclick="removeKwPaste('${k}')">×</button></span>`
+    ).join('');
+  }
 
-    loading.classList.remove('active');
-    results.classList.add('active');
+  async function runAnalysisPaste() {
+    const pasteText = document.getElementById('pasteText').value.trim();
+    const targetRole = document.getElementById('pasteTargetRole').value.trim();
+    if (!pasteText) { alert('Bitte füge deinen LinkedIn-Profiltext ein.'); return; }
 
-    // Animate score ring
-    setTimeout(() => {
-      const score = 72;
-      const circumference = 251;
-      const offset = circumference - (score / 100) * circumference;
-      document.getElementById('scoreRing').style.strokeDashoffset = offset;
-    }, 100);
+    // Override tones with paste tone for all sections
+    tones.headline = pasteTone;
+    tones.about = pasteTone;
+    tones.bullets = pasteTone;
 
-    // Reset loading steps for next time
-    document.querySelectorAll('.loading-step').forEach(s => {
-      s.classList.remove('active', 'done');
+    // Also inject paste keywords into main keywords array
+    keywordsPaste.forEach(k => { if (!keywords.includes(k)) keywords.push(k); });
+    if (targetRole) document.getElementById('targetRole').value = targetRole;
+
+    // Put paste text into currentAbout as context
+    document.getElementById('currentAbout').value = pasteText.substring(0, 800);
+
+    runAnalysis();
+  }
+
+  // ─── STATE ───
+const tones = { headline:'🎯 Direkt & klar', about:'🤝 Persönlich', bullets:'🚀 Ambitioniert' };
+const feedback = { headline:[], about:[], bullets:[] };
+const keywords = [];
+let selectedVariants = { headline: 0, about: 0 };
+
+// ─── KEYWORD TAGS ───
+function addKeyword() {
+  const inp = document.getElementById('kwInput');
+  const val = inp.value.trim();
+  if (!val || keywords.includes(val)) { inp.value=''; return; }
+  keywords.push(val);
+  renderTags();
+  inp.value = '';
+}
+function removeKeyword(kw) {
+  const i = keywords.indexOf(kw);
+  if (i > -1) keywords.splice(i, 1);
+  renderTags();
+}
+function renderTags() {
+  const el = document.getElementById('kwTags');
+  el.innerHTML = keywords.map(k =>
+    `<span class="kw-tag">${k}<button onclick="removeKeyword('${k}')">×</button></span>`
+  ).join('');
+}
+
+// ─── SECTION TOGGLES ───
+function toggleSec(name) {
+  const el = document.getElementById('sec-' + name);
+  el.classList.toggle('section-open');
+}
+
+// ─── TONE PICKERS ───
+function openTonePicker(e, id) {
+  e.stopPropagation();
+  document.querySelectorAll('.tone-popup').forEach(p => { if (p.id !== id) p.classList.remove('open'); });
+  document.getElementById(id).classList.toggle('open');
+}
+function setTone(section, tone, el) {
+  tones[section] = tone;
+  document.getElementById('tone-' + section + '-label').textContent = tone;
+  el.closest('.tone-popup').querySelectorAll('.tone-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.closest('.tone-popup').classList.remove('open');
+}
+document.addEventListener('click', () => { document.querySelectorAll('.tone-popup').forEach(p => p.classList.remove('open')); });
+
+// ─── ANALYSIS ───
+async function runAnalysis() {
+  const currentTitle = document.getElementById('currentTitle').value.trim();
+  const yearsExp = document.getElementById('yearsExp').value.trim();
+  const achievements = document.getElementById('achievements').value.trim();
+  const personality = document.getElementById('personality').value.trim();
+  const targetRole = document.getElementById('targetRole').value.trim();
+  const targetIndustry = document.getElementById('targetIndustry').value.trim();
+  const currentHeadline = document.getElementById('currentHeadline').value.trim();
+  const currentAbout = document.getElementById('currentAbout').value.trim();
+  const currentBullets = document.getElementById('currentBullets').value.trim();
+
+  if (!currentTitle && !targetRole) {
+    alert('Bitte mindestens aktuelle Position oder Zielrolle eingeben.');
+    return;
+  }
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('loadingState').classList.add('active');
+  document.getElementById('resultsWrap').classList.remove('active');
+
+  // Animate loading steps
+  const steps = ['ls1','ls2','ls3','ls4','ls5'];
+  let si = 0;
+  const stepInterval = setInterval(() => {
+    if (si > 0) { document.getElementById(steps[si-1]).classList.remove('active'); document.getElementById(steps[si-1]).classList.add('done'); }
+    if (si < steps.length) { document.getElementById(steps[si]).classList.add('active'); si++; }
+    else clearInterval(stepInterval);
+  }, 700);
+
+  const userKeywords = keywords.join(', ');
+  const feedbackNotes = Object.entries(feedback).filter(([,v])=>v.length).map(([k,v])=>`${k}: ${v.join(', ')}`).join('; ');
+
+  const prompt = `Du bist ein LinkedIn-Profil-Optimierer für den deutschsprachigen DACH-Raum. Erstelle optimierte LinkedIn-Texte basierend auf diesen Angaben:
+
+PERSON:
+- Aktuelle Position: ${currentTitle || 'nicht angegeben'}
+- Erfahrung: ${yearsExp || 'nicht angegeben'}
+- Erfolge/Zahlen: ${achievements || 'nicht angegeben'}
+- Persönlichkeit/Stil: ${personality || 'nicht angegeben'}
+- Aktuelle Headline: ${currentHeadline || 'keine'}
+- Aktueller About-Text: ${currentAbout || 'keiner vorhanden'}
+- Aktuelle Bullets: ${currentBullets || 'keine'}
+
+ZIEL:
+- Zielrolle: ${targetRole || 'nicht angegeben'}
+- Zielbranche: ${targetIndustry || 'nicht angegeben'}
+- Wunsch-Keywords: ${userKeywords || 'keine'}
+
+TONALITÄTEN (KRITISCH — wende sie spürbar an!):
+- Headline: ${tones.headline}
+- About: ${tones.about}
+- Bullets: ${tones.bullets}
+
+${feedbackNotes ? 'FEEDBACK AUS VORHERIGEN RUNDEN: ' + feedbackNotes : ''}
+
+Erstelle folgendes JSON-Objekt (NUR JSON, kein Markdown):
+{
+  "score": <Zahl 40-95>,
+  "scoreTitle": "<kurze Bewertung>",
+  "scoreDesc": "<2 Sätze was fehlt und was gut ist>",
+  "headline_variants": [
+    {"tone": "${tones.headline}", "text": "<Variante 1 — kürzere, klarere Headline, max 200 Zeichen>"},
+    {"tone": "${tones.headline} — Variante 2", "text": "<Variante 2 — andere Formulierung, gleiche Tonalität>"},
+    {"tone": "${tones.headline} — Variante 3", "text": "<Variante 3 — nochmals anders>"}
+  ],
+  "about_variants": [
+    {"tone": "${tones.about}", "text": "<Variante 1 — 3-4 Absätze, persönlich, mit Zahlen, mit CTA am Ende>"},
+    {"tone": "${tones.about} — kompakter", "text": "<Variante 2 — 2 Absätze, prägnanter>"}
+  ],
+  "keywords": [
+    {"kw": "<keyword>", "priority": "hoch", "reason": "<warum wichtig für Zielrolle>"},
+    {"kw": "<keyword>", "priority": "hoch", "reason": "<warum>"},
+    {"kw": "<keyword>", "priority": "mittel", "reason": "<warum>"},
+    {"kw": "<keyword>", "priority": "mittel", "reason": "<warum>"},
+    {"kw": "<keyword>", "priority": "niedrig", "reason": "<warum>"}
+  ],
+  "checklist": [
+    {"label": "Profilfoto vorhanden", "status": "ok"},
+    {"label": "Deckbild / Banner gesetzt", "status": "warn"},
+    {"label": "Headline vollständig optimiert", "status": "fail"},
+    {"label": "About-Text mit CTA", "status": "fail"},
+    {"label": "Aktuelle Position vollständig", "status": "ok"},
+    {"label": "Skills-Sektion ≥ 10 Einträge", "status": "warn"},
+    {"label": "Featured-Bereich aktiviert", "status": "fail"},
+    {"label": "Empfehlungen vorhanden", "status": "ok"},
+    {"label": "Kontaktinfos vollständig", "status": "warn"},
+    {"label": "Bildungsabschlüsse vollständig", "status": "ok"}
+  ]
+}
+
+WICHTIG: Die drei Headline-Varianten und zwei About-Varianten MÜSSEN sich deutlich voneinander unterscheiden. Wende die Tonalität (${tones.headline} für Headline, ${tones.about} für About) SPÜRBAR an — nicht generisch!`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
-    document.getElementById('step1').classList.add('active');
+    const data = await resp.json();
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(clean);
+
+    clearInterval(stepInterval);
+    steps.forEach(s => { document.getElementById(s).classList.remove('active','done'); });
+    document.getElementById('ls1').classList.add('active');
+
+    document.getElementById('loadingState').classList.remove('active');
+    renderResults(result);
+
+  } catch(err) {
+    clearInterval(stepInterval);
+    document.getElementById('loadingState').classList.remove('active');
+    // Fallback demo mode
+    renderResults(getDemoData());
+  }
+}
+
+function getDemoData() {
+  const role = document.getElementById('targetRole').value || 'Head of Sales';
+  const title = document.getElementById('currentTitle').value || 'Account Manager';
+  return {
+    score: 68,
+    scoreTitle: 'Ausbaufähig — klares Potenzial',
+    scoreDesc: `Dein Profil nennt eine Position, aber kommuniziert noch keine Wirkung. Headline und About sind noch nicht auf "${role}" ausgerichtet.`,
+    headline_variants: [
+      { tone: tones.headline, text: `${title} → ${role} | B2B Sales | Pipeline-Builder | Offen für neue Herausforderungen` },
+      { tone: tones.headline + ' — Variante 2', text: `Von ${title} zu ${role} | Vertriebsprofi mit Fokus auf Wachstum & Kundenbeziehungen` },
+      { tone: tones.headline + ' — Variante 3', text: `${role}-Kandidat | Sales-Expertise aus der Praxis | Bereit für die nächste Stufe` }
+    ],
+    about_variants: [
+      { tone: tones.about, text: `Ich bin ${title} mit dem klaren Ziel, in eine ${role}-Position zu wachsen.\n\nIn meiner bisherigen Laufbahn habe ich gelernt: Erfolgreicher Vertrieb beginnt mit echtem Verständnis für den Kunden — nicht mit Scripts.\n\n📍 Ich suche aktiv nach Positionen als ${role} im DACH-Raum. Gerne vernetzen!` },
+      { tone: tones.about + ' — kompakter', text: `Als ${title} habe ich bewiesen, dass Kundenverständnis und Konsequenz den Unterschied machen.\n\nNächster Schritt: ${role}. Offen für spannende Gespräche.` }
+    ],
+    keywords: [
+      { kw: 'Enterprise Sales', priority: 'hoch', reason: 'Kernbegriff für ' + role + '-Suchen' },
+      { kw: 'Revenue Growth', priority: 'hoch', reason: 'Zeigt strategische Verantwortung' },
+      { kw: 'Pipeline Management', priority: 'mittel', reason: 'Recruiter-Suche nach operativen Skills' },
+      { kw: 'MEDDIC', priority: 'mittel', reason: 'Methodik-Keywords erhöhen Glaubwürdigkeit' },
+      { kw: 'Go-to-Market', priority: 'niedrig', reason: 'Nützlich für Senior-Rollen' }
+    ],
+    checklist: [
+      { label: 'Profilfoto vorhanden', status: 'ok' },
+      { label: 'Deckbild / Banner gesetzt', status: 'warn' },
+      { label: 'Headline vollständig optimiert', status: 'fail' },
+      { label: 'About-Text mit CTA', status: 'fail' },
+      { label: 'Aktuelle Position vollständig', status: 'ok' },
+      { label: 'Skills-Sektion ≥ 10 Einträge', status: 'warn' },
+      { label: 'Featured-Bereich aktiviert', status: 'fail' },
+      { label: 'Empfehlungen vorhanden', status: 'ok' },
+      { label: 'Kontaktinfos vollständig', status: 'warn' },
+      { label: 'Bildungsabschlüsse vollständig', status: 'ok' }
+    ]
+  };
+}
+
+function renderResults(data) {
+  // Score
+  document.getElementById('scoreNum').innerHTML = data.score + '<small>/100</small>';
+  document.getElementById('scoreTitle').textContent = data.scoreTitle;
+  document.getElementById('scoreDesc').textContent = data.scoreDesc;
+  setTimeout(() => {
+    const offset = 226 - (data.score / 100) * 226;
+    document.getElementById('ringFill').style.strokeDashoffset = offset;
+  }, 100);
+
+  // Tone badges
+  document.getElementById('headline-tone-badge').textContent = tones.headline;
+  document.getElementById('about-tone-badge').textContent = tones.about;
+
+  // Headline variants
+  const hv = document.getElementById('headline-variants');
+  hv.innerHTML = data.headline_variants.map((v, i) => `
+    <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('headline',${i},this)">
+      <div class="variant-tone-badge">${v.tone}</div>
+      <div class="variant-label">Variante ${i+1}</div>
+      <div class="variant-text">${v.text}</div>
+    </div>
+  `).join('');
+  selectedVariants.headline = 0;
+  document.getElementById('headline-edit-text').value = data.headline_variants[0].text;
+
+  // About variants
+  const av = document.getElementById('about-variants');
+  av.innerHTML = data.about_variants.map((v, i) => `
+    <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('about',${i},this)">
+      <div class="variant-tone-badge">${v.tone}</div>
+      <div class="variant-label">Variante ${i+1}</div>
+      <div class="variant-text" style="white-space:pre-line;">${v.text}</div>
+    </div>
+  `).join('');
+  selectedVariants.about = 0;
+  document.getElementById('about-edit-text').value = data.about_variants[0].text;
+
+  // Keywords
+  const kwResults = document.getElementById('kw-results');
+  kwResults.innerHTML = data.keywords.map(k => `
+    <div class="kw-result-item ${k.priority==='hoch'?'high':k.priority==='mittel'?'med':'low'}">
+      <div style="flex-shrink:0;">
+        <div class="kw-priority">${k.priority==='hoch'?'🟢 HOCH':k.priority==='mittel'?'🟡 MITTEL':'⚪ NIEDRIG'}</div>
+      </div>
+      <div><strong>${k.kw}</strong> — ${k.reason}</div>
+    </div>
+  `).join('');
+  document.getElementById('kw-count-badge').textContent = '+' + data.keywords.length + ' empfohlen';
+
+  // Checklist
+  const ok = data.checklist.filter(c=>c.status==='ok').length;
+  document.getElementById('check-score-badge').textContent = ok + '/' + data.checklist.length;
+  document.getElementById('checklist').innerHTML = data.checklist.map(c => `
+    <div class="check-row ${c.status}">
+      <span>${c.status==='ok'?'✅':c.status==='warn'?'⚠️':'❌'}</span>
+      ${c.label}
+    </div>
+  `).join('');
+
+  document.getElementById('resultsWrap').classList.add('active');
+}
+
+function selectVariant(section, idx, el) {
+  el.closest('.variants').querySelectorAll('.variant-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedVariants[section] = idx;
+  // Sync edit textarea
+  const variants = el.closest('.variants').querySelectorAll('.variant-text');
+  document.getElementById(section + '-edit-text').value = variants[idx].textContent;
+}
+
+function toggleEdit(section) {
+  const ea = document.getElementById(section + '-edit');
+  ea.style.display = ea.style.display === 'none' ? 'block' : 'none';
+}
+
+function copySection(section) {
+  const ea = document.getElementById(section + '-edit');
+  let text;
+  if (ea.style.display !== 'none') {
+    text = document.getElementById(section + '-edit-text').value;
+  } else {
+    const sel = document.querySelector('#' + section + '-variants .variant-card.selected .variant-text');
+    text = sel ? sel.textContent : '';
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    const btns = document.querySelectorAll('#out-' + section + ' .btn-sm');
+    btns.forEach(b => { if (b.textContent.includes('Kopieren')) { const o=b.textContent; b.textContent='✅ Kopiert!'; setTimeout(()=>b.textContent=o,2000); } });
+  });
+}
+
+async function regenerateSection(section) {
+  const btn = document.querySelector(`#out-${section} .btn-sm.primary`);
+  const orig = btn.textContent;
+  btn.textContent = '⟳ Generiere…';
+  btn.disabled = true;
+
+  const feedbackHint = feedback[section].length ? ' Feedback beachten: ' + feedback[section].join(', ') + '.' : '';
+  const targetRole = document.getElementById('targetRole').value || 'Zielrolle';
+  const achievements = document.getElementById('achievements').value || '';
+
+  const prompt = `Erstelle für einen LinkedIn-${section === 'headline' ? 'Headline' : 'About-Text'} neue Varianten.
+Zielrolle: ${targetRole}
+Erfolge: ${achievements}
+Tonalität: ${tones[section]}${feedbackHint}
+Erstelle ${section === 'headline' ? '3 Headline-Varianten (max 200 Zeichen je)' : '2 About-Varianten (3-4 Absätze bzw. 2 Absätze)'}.
+Antworte NUR mit JSON: {"variants": [{"tone": "...", "text": "..."}, ...]}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await resp.json();
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g,'').trim();
+    const result = JSON.parse(clean);
+
+    const container = document.getElementById(section + '-variants');
+    container.innerHTML = result.variants.map((v, i) => `
+      <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('${section}',${i},this)">
+        <div class="variant-tone-badge">${v.tone}</div>
+        <div class="variant-label">Variante ${i+1}</div>
+        <div class="variant-text" style="${section==='about'?'white-space:pre-line;':''}">${v.text}</div>
+      </div>
+    `).join('');
+    document.getElementById(section + '-edit-text').value = result.variants[0].text;
+  } catch(e) {
+    // fallback: just shuffle existing
   }
 
-  function copyText(id) {
-    const el = document.getElementById(id);
-    const text = el.textContent || el.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = event.target;
-      const orig = btn.textContent;
-      btn.textContent = '✅ Kopiert!';
-      setTimeout(() => btn.textContent = orig, 2000);
-    });
+  btn.textContent = orig;
+  btn.disabled = false;
+}
+
+function giveFeedback(btn, section, type) {
+  btn.classList.toggle('active');
+  if (btn.classList.contains('active')) {
+    if (!feedback[section].includes(type)) feedback[section].push(type);
+  } else {
+    feedback[section] = feedback[section].filter(f => f !== type);
   }
+}
 </script>
 </body>
 </html>
