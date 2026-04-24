@@ -3,842 +3,1428 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinkedIn AI Optimizer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>JobCoach AI – LinkedIn Optimizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  /* Warm Cream – Medium palette */
-  --bg:#2a2420;--bg2:#332d27;--bg3:#3d352d;--bg4:#483f35;
-  --border:rgba(245,225,195,0.09);--border2:rgba(245,225,195,0.17);--border3:rgba(245,225,195,0.3);
-  --text:#f2e8d8;--text2:#b5a48e;--text3:#78695a;
-  --accent:#c8902a;--accent2:#e6b04e;--aglow:rgba(200,144,42,0.25);
-  --green:#5cb87a;--gbg:rgba(92,184,122,0.1);--gborder:rgba(92,184,122,0.22);
-  --amber:#e6b04e;--abg:rgba(230,176,78,0.1);--amborder:rgba(230,176,78,0.25);
-  --red:#d4705a;--rbg:rgba(212,112,90,0.1);--rborder:rgba(212,112,90,0.22);
-  --r:14px;--rsm:8px;
-}
-html{scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-h1,h2,h3,h4{font-family:'Outfit',sans-serif;font-weight:700;letter-spacing:-0.02em}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Cpath d='M0 3h6M3 0v6' stroke='%23f2d0a0' stroke-width='0.35' stroke-opacity='0.09'/%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M0 12h24M12 0v24' stroke='%23f2d0a0' stroke-width='0.4' stroke-opacity='0.04'/%3E%3C/svg%3E");background-size:6px 6px,24px 24px}
-.screen{display:none;min-height:100vh;position:relative;z-index:1}
-.screen.active{display:flex;flex-direction:column}
+  :root {
+    --navy: #1B2B5E;
+    --navy-dark: #0F1A3D;
+    --navy-mid: #253580;
+    --teal: #00BFA6;
+    --teal-light: #00D4B8;
+    --teal-pale: #E0FAF7;
+    --cream: #F5F3EE;
+    --white: #FFFFFF;
+    --gray-50: #F8F9FA;
+    --gray-100: #F0F2F5;
+    --gray-200: #E2E6EC;
+    --gray-400: #9AA3B2;
+    --gray-600: #5A6478;
+    --gray-800: #2D3548;
+    --success: #00BFA6;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --shadow-sm: 0 1px 3px rgba(27,43,94,0.08);
+    --shadow-md: 0 4px 16px rgba(27,43,94,0.12);
+    --shadow-lg: 0 8px 32px rgba(27,43,94,0.16);
+    --shadow-xl: 0 16px 48px rgba(27,43,94,0.2);
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
 
-/* ── KEY SCREEN ── */
-#screen-key{align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(200,144,42,0.15) 0%,transparent 70%)}
-.key-card{width:100%;max-width:480px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:2.5rem;animation:fadeUp .5s ease}
-.logo-mark{width:52px;height:52px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:800;font-size:22px;color:#fff;margin-bottom:1.5rem;box-shadow:0 0 30px var(--aglow)}
-.key-card h1{font-size:1.7rem;margin-bottom:.4rem}
-.key-card>p{font-size:14px;color:var(--text2);margin-bottom:2rem;line-height:1.6}
-.input-wrap{position:relative;margin-bottom:1rem}
-.input-wrap input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rsm);padding:12px 44px 12px 14px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
-.input-wrap input:focus{border-color:var(--accent)}
-.input-wrap input::placeholder{color:var(--text3)}
-.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1}
-.btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--rsm);color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:15px;cursor:pointer;transition:opacity .15s,transform .1s;box-shadow:0 4px 20px var(--aglow)}
-.btn-primary:hover{opacity:.9}
-.btn-primary:active{transform:scale(.98)}
-.security-note{margin-top:1.2rem;padding:10px 14px;background:var(--gbg);border:1px solid var(--gborder);border-radius:var(--rsm);font-size:12px;color:var(--green);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── TOPBAR ── */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);background:rgba(42,36,32,0.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
-.topbar-logo{display:flex;align-items:center;gap:10px;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px}
-.topbar-logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
-.key-indicator{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);background:var(--gbg);border:1px solid var(--gborder);border-radius:20px;padding:4px 12px}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
 
-/* ── FORM ── */
-#screen-form{padding:0}
-.form-main{max-width:800px;margin:0 auto;padding:3rem 2rem}
-.form-header{margin-bottom:2.5rem}
-.form-header h2{font-size:2rem;margin-bottom:.5rem}
-.form-header p{color:var(--text2);font-size:15px}
-.mode-toggle{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:4px;margin-bottom:2rem;gap:4px}
-.mode-btn{flex:1;padding:10px 16px;border-radius:var(--rsm);border:none;background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
-.mode-btn.active{background:var(--bg3);color:var(--text);border:1px solid var(--border2);box-shadow:0 2px 8px rgba(0,0,0,.3)}
-.form-mode{display:none}
-.form-mode.active{display:block}
-.form-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;margin-bottom:1.2rem;transition:border-color .2s}
-.form-section:focus-within{border-color:var(--border2)}
-.section-label{font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:.4rem}
-.section-title-text{font-size:15px;font-weight:500;margin-bottom:1.2rem;color:var(--text)}
-.field-group{margin-bottom:1rem}
-.field-group:last-child{margin-bottom:0}
-.field-label{font-size:12px;color:var(--text2);margin-bottom:6px;display:block}
-.field-group input,.field-group textarea,.field-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 14px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;resize:vertical}
-.field-group input:focus,.field-group textarea:focus,.field-group select:focus{border-color:var(--accent)}
-.field-group input::placeholder,.field-group textarea::placeholder{color:var(--text3)}
-.field-group select option{background:var(--bg3);color:var(--text)}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:520px){.two-col{grid-template-columns:1fr}}
-.chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.chip{padding:6px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:13px;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .15s}
-.chip:hover{border-color:var(--accent);color:var(--accent2)}
-.chip.selected{background:var(--aglow);border-color:var(--accent);color:var(--accent2)}
-.paste-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;margin-bottom:1.2rem}
-.paste-section h3{font-size:15px;font-weight:500;margin-bottom:.5rem}
-.paste-instructions{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:14px;margin-bottom:1rem;font-size:13px;color:var(--text2);line-height:1.8}
-.paste-instructions strong{color:var(--text);font-weight:500}
-.paste-instructions ol{margin-left:18px;margin-top:6px}
-.paste-instructions li{margin-bottom:4px}
-.paste-section textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:14px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .2s;resize:vertical;line-height:1.6}
-.paste-section textarea:focus{border-color:var(--accent)}
-.paste-section textarea::placeholder{color:var(--text3)}
-.analyze-btn{width:100%;padding:16px;margin-top:2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:var(--r);color:#fff;font-family:'Outfit',sans-serif;font-weight:700;font-size:16px;cursor:pointer;transition:all .2s;box-shadow:0 6px 30px var(--aglow);display:flex;align-items:center;justify-content:center;gap:10px}
-.analyze-btn:hover{transform:translateY(-1px);box-shadow:0 10px 40px var(--aglow)}
-.analyze-btn:active{transform:scale(.99)}
+  /* ─── HEADER ─── */
+  header {
+    background: var(--navy-dark);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
 
-/* ── LOADING ── */
-#screen-loading{align-items:center;justify-content:center;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(200,144,42,0.1) 0%,transparent 70%)}
-.loading-inner{text-align:center;max-width:420px;padding:2rem;width:100%}
-.loading-orb{width:80px;height:80px;margin:0 auto 2rem;border-radius:50%;background:conic-gradient(from 0deg,transparent 0%,var(--accent) 40%,var(--accent2) 60%,transparent 100%);animation:spin 1.2s linear infinite;position:relative}
-.loading-orb::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--bg)}
-.loading-inner h2{font-size:1.5rem;margin-bottom:.8rem}
-.loading-inner>p{color:var(--text2);font-size:14px;line-height:1.6}
-.loading-steps{margin-top:2rem;display:flex;flex-direction:column;gap:8px}
-.loading-step{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--rsm);font-size:13px;color:var(--text3);transition:all .4s}
-.loading-step.active{color:var(--text);border-color:var(--border2)}
-.loading-step.done{color:var(--green);border-color:var(--gborder)}
-.step-icon{font-size:15px;min-width:20px;text-align:center}
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
 
-/* ── RESULTS ── */
-#screen-results{padding:0}
-.results-topbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);background:rgba(42,36,32,0.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:10px}
-.results-title{font-family:'Outfit',sans-serif;font-size:16px;font-weight:700}
-.results-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-ghost{padding:7px 16px;border-radius:var(--rsm);border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
-.btn-ghost:hover{background:var(--bg3);color:var(--text)}
-.btn-accent{padding:7px 16px;border-radius:var(--rsm);border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
-.btn-accent:hover{opacity:.85}
-.results-main{max-width:960px;margin:0 auto;padding:2.5rem 2rem}
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
 
-/* score */
-.score-banner{background:linear-gradient(135deg,rgba(200,144,42,0.15),rgba(230,176,78,0.08));border:1px solid rgba(200,144,42,0.25);border-radius:var(--r);padding:1.8rem;margin-bottom:2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
-.score-ring{width:80px;height:80px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center}
-.score-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
-.score-num{font-family:'Outfit',sans-serif;font-size:22px;font-weight:800;color:var(--accent2);position:relative;z-index:1}
-.score-info h3{font-size:1.2rem;margin-bottom:.3rem}
-.score-info p{font-size:14px;color:var(--text2);line-height:1.5}
+  /* SVG Star+Arrow Icon */
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
 
-/* tabs – scrollable */
-.tabs-wrap{overflow-x:auto;margin-bottom:1.5rem;padding-bottom:2px}
-.tabs-wrap::-webkit-scrollbar{height:0}
-.result-tabs{display:flex;gap:4px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:4px;min-width:max-content}
-.result-tab{padding:8px 16px;border-radius:var(--rsm);border:none;background:transparent;color:var(--text2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;text-align:center}
-.result-tab.active{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
-.result-panel{display:none}
-.result-panel.active{display:block;animation:slideIn .3s ease}
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
 
-/* compare card */
-.compare-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1.2rem}
-.compare-header{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.compare-header h3{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
-.badge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:10px}
-.badge-new{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
-.badge-old{background:var(--abg);color:var(--amber);border:1px solid var(--amborder)}
-.badge-info{background:rgba(0,119,181,.1);color:var(--accent2);border:1px solid rgba(0,160,220,.2)}
-.compare-body{display:grid;grid-template-columns:1fr 1fr}
-@media(max-width:600px){.compare-body{grid-template-columns:1fr}}
-.compare-col{padding:1.2rem 1.5rem}
-.compare-col:first-child{border-right:1px solid var(--border)}
-@media(max-width:600px){.compare-col:first-child{border-right:none;border-bottom:1px solid var(--border)}}
-.compare-col-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
-.compare-col-content{font-size:13px;line-height:1.75;color:var(--text2);white-space:pre-wrap;word-break:break-word}
-.compare-col.new .compare-col-content{color:var(--text)}
-.full-col{grid-column:1/-1}
-.copy-row{padding:.8rem 1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.copy-row p{font-size:12px;color:var(--text3);flex:1;padding-right:1rem}
-.copy-btn{padding:7px 18px;border-radius:var(--rsm);border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:5px;white-space:nowrap;min-width:110px}
-.copy-btn:hover{background:var(--bg4);color:var(--text);border-color:var(--border3)}
-.copy-btn.copied{color:var(--green);border-color:var(--gborder);background:var(--gbg)}
+  .logo-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.3px;
+  }
 
-/* post cards */
-.post-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem}
-.post-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.post-card h4{font-size:14px;color:var(--accent2);font-weight:500}
-.post-card p{font-size:14px;color:var(--text2);line-height:1.75;white-space:pre-wrap;word-break:break-word}
+  .logo-name span {
+    color: var(--teal);
+  }
 
-/* tips */
-.tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media(max-width:580px){.tips-grid{grid-template-columns:1fr}}
-.tip-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem}
-.tip-card.priority-high{border-left:2px solid var(--red)}
-.tip-card.priority-med{border-left:2px solid var(--amber)}
-.tip-card.priority-low{border-left:2px solid var(--green)}
-.tip-card h4{font-size:14px;margin-bottom:6px;color:var(--text)}
-.tip-card p{font-size:13px;color:var(--text2);line-height:1.6}
+  .logo-tagline {
+    font-size: 9px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
 
-/* checklist */
-.checklist-group{margin-bottom:1.5rem}
-.checklist-group h4{font-size:13px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
-.check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.check-item:last-child{border-bottom:none}
-.check-box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--bg3)}
-.check-box.checked{background:var(--green);border-color:var(--green);color:#000;font-size:12px}
-.check-box:hover{border-color:var(--accent)}
-.check-content{flex:1}
-.check-title{font-size:14px;color:var(--text);margin-bottom:2px}
-.check-desc{font-size:12px;color:var(--text3);line-height:1.5}
-.check-priority{font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px;margin-left:8px;vertical-align:middle}
-.cp-high{background:var(--rbg);color:var(--red);border:1px solid var(--rborder)}
-.cp-med{background:var(--abg);color:var(--amber);border:1px solid var(--amborder)}
-.cp-low{background:var(--gbg);color:var(--green);border:1px solid var(--gborder)}
-.checklist-progress{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
-.cl-score{font-family:'Outfit',sans-serif;font-size:2rem;font-weight:800;color:var(--accent2)}
-.cl-bar-wrap{flex:1;min-width:120px}
-.cl-bar-label{font-size:12px;color:var(--text2);margin-bottom:6px}
-.cl-bar-track{height:6px;background:var(--bg4);border-radius:3px}
-.cl-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .5s ease}
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
 
-/* certs */
-.cert-list{display:flex;flex-direction:column;gap:.8rem}
-.cert-item{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:1rem 1.2rem}
-.cert-item h4{font-size:14px;color:var(--text);margin-bottom:3px}
-.cert-item p{font-size:13px;color:var(--text2);line-height:1.5}
+  nav a {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
 
+  nav a:hover { color: white; background: rgba(255,255,255,0.08); }
+  nav a.active { color: var(--teal); background: rgba(0,191,166,0.12); }
 
-/* toast */
-.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green);color:#1a2e22;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;padding:10px 24px;border-radius:30px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .nav-cta {
+    margin-left: 8px;
+    background: var(--teal) !important;
+    color: var(--navy-dark) !important;
+    font-weight: 700 !important;
+    padding: 8px 18px !important;
+    border-radius: 8px !important;
+  }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-@keyframes slideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+  .nav-cta:hover { background: var(--teal-light) !important; }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-mid) 100%);
+    padding: 64px 2rem 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,191,166,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0,191,166,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0,191,166,0.15);
+    border: 1px solid rgba(0,191,166,0.3);
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s ease;
+  }
+
+  .hero h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 20px;
+    animation: fadeInDown 0.6s ease 0.1s both;
+  }
+
+  .hero h1 span { color: var(--teal); }
+
+  .hero p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    animation: fadeInDown 0.6s ease 0.2s both;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    animation: fadeInDown 0.6s ease 0.3s both;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--teal);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* ─── MAIN CONTENT ─── */
+  .main {
+    max-width: 1200px;
+    margin: -32px auto 0;
+    padding: 0 2rem 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ─── MODE TOGGLE ─── */
+  .mode-toggle {
+    display: flex;
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 4px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 28px;
+    width: fit-content;
+  }
+
+  .mode-btn {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--gray-400);
+    background: transparent;
+  }
+
+  .mode-btn.active {
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ─── TWO COLUMN LAYOUT ─── */
+  .optimizer-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .optimizer-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--teal-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .card-icon svg { width: 18px; height: 18px; }
+
+  .card-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 1px;
+  }
+
+  .card-body { padding: 24px; }
+
+  /* ─── FORM FIELDS ─── */
+  .field { margin-bottom: 20px; }
+
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
+  }
+
+  label .optional {
+    font-weight: 400;
+    color: var(--gray-400);
+    font-size: 12px;
+    margin-left: 4px;
+  }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--gray-800);
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--teal);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(0,191,166,0.12);
+  }
+
+  textarea { min-height: 100px; line-height: 1.6; }
+
+  /* ─── SECTION TOGGLES ─── */
+  .section-group { margin-bottom: 4px; }
+
+  .section-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 0;
+  }
+
+  .section-toggle:hover { border-color: var(--teal); background: var(--teal-pale); }
+
+  .section-toggle .toggle-left { display: flex; align-items: center; gap: 10px; }
+
+  .section-toggle .chevron {
+    transition: transform 0.2s;
+    color: var(--gray-400);
+  }
+
+  .section-toggle.open .chevron { transform: rotate(180deg); }
+  .section-toggle.open { border-color: var(--teal); background: var(--teal-pale); color: var(--navy); border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+  .section-content {
+    display: none;
+    padding: 20px;
+    border: 1.5px solid var(--teal);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    background: rgba(0,191,166,0.02);
+  }
+
+  .section-content.open { display: block; }
+
+  /* ─── TONE SELECTOR ─── */
+  .tone-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .tone-btn {
+    padding: 10px 8px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    background: var(--gray-50);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+  }
+
+  .tone-btn:hover { border-color: var(--teal); }
+  .tone-btn.selected { border-color: var(--teal); background: var(--teal-pale); color: var(--navy); }
+  .tone-btn .tone-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+
+  /* ─── SUBMIT BUTTON ─── */
+  .btn-analyze {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    letter-spacing: 0.2px;
+    box-shadow: 0 4px 16px rgba(27,43,94,0.25);
+    margin-top: 24px;
+  }
+
+  .btn-analyze:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(27,43,94,0.35);
+    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+  }
+
+  .btn-analyze:active { transform: translateY(0); }
+
+  .btn-analyze .btn-teal { color: var(--teal); }
+
+  /* ─── LOADING ─── */
+  .loading-state {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .loading-state.active { display: block; }
+
+  .loading-ring {
+    width: 56px;
+    height: 56px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  .loading-text {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .loading-sub {
+    font-size: 13px;
+    color: var(--gray-400);
+  }
+
+  .loading-steps {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .loading-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--gray-400);
+    opacity: 0.4;
+    transition: all 0.4s;
+  }
+
+  .loading-step.done { color: var(--teal); opacity: 1; }
+  .loading-step.active { color: var(--navy); opacity: 1; font-weight: 600; }
+
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* ─── RESULTS PANEL ─── */
+  .results-panel {
+    display: none;
+  }
+
+  .results-panel.active {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Score Card */
+  .score-card {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .score-ring-wrap {
+    flex-shrink: 0;
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+
+  .score-ring-wrap svg {
+    transform: rotate(-90deg);
+    width: 100px;
+    height: 100px;
+  }
+
+  .score-ring-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 8; }
+  .score-ring-fill {
+    fill: none;
+    stroke: var(--teal);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 251;
+    stroke-dashoffset: 251;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: white;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .score-number span {
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    display: block;
+  }
+
+  .score-info { flex: 1; }
+
+  .score-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+
+  .score-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .score-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  /* Result Sections */
+  .result-section {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .result-section-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .result-section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-improved { background: rgba(0,191,166,0.12); color: var(--teal); }
+  .tag-new { background: rgba(27,43,94,0.08); color: var(--navy); }
+  .tag-tip { background: rgba(245,158,11,0.12); color: #B45309; }
+
+  .result-section-body { padding: 20px; }
+
+  /* Before/After */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .ba-panel {
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .ba-panel.before {
+    background: #FEF2F2;
+    border: 1px solid #FCA5A5;
+    color: #7F1D1D;
+  }
+
+  .ba-panel.after {
+    background: var(--teal-pale);
+    border: 1px solid rgba(0,191,166,0.3);
+    color: #065F46;
+  }
+
+  .ba-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.6;
+  }
+
+  /* Bullet list results */
+  .result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--gray-50);
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--gray-800);
+    border-left: 3px solid var(--teal);
+  }
+
+  .result-item-icon {
+    color: var(--teal);
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Checklist */
+  .checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--gray-800);
+    padding: 4px 0;
+  }
+
+  .check-item.done .check-icon { color: var(--teal); }
+  .check-item.warn .check-icon { color: var(--warning); }
+  .check-item.fail .check-icon { color: var(--danger); }
+  .check-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* Copy button */
+  .btn-copy {
+    padding: 7px 16px;
+    background: transparent;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-copy:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* ─── FREEMIUM BANNER ─── */
+  .freemium-bar {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .freemium-text strong {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .freemium-text span {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .btn-upgrade {
+    flex-shrink: 0;
+    padding: 10px 22px;
+    background: var(--teal);
+    color: var(--navy-dark);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-upgrade:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy-dark);
+    padding: 24px 2rem;
+    text-align: center;
+    color: rgba(255,255,255,0.3);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  footer span { color: var(--teal); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-panel.active > * {
+    animation: fadeIn 0.4s ease both;
+  }
+
+  .results-panel.active > *:nth-child(1) { animation-delay: 0s; }
+  .results-panel.active > *:nth-child(2) { animation-delay: 0.08s; }
+  .results-panel.active > *:nth-child(3) { animation-delay: 0.16s; }
+  .results-panel.active > *:nth-child(4) { animation-delay: 0.24s; }
+  .results-panel.active > *:nth-child(5) { animation-delay: 0.32s; }
+
+  /* Freemium usage dots */
+  .usage-dots {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .usage-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .usage-dot.used { background: var(--teal); }
+
+  .paste-mode { display: none; }
+  .paste-mode.active { display: block; }
+  .form-mode { display: block; }
+  .form-mode.hidden { display: none; }
 </style>
 </head>
 <body>
 
-<div class="toast" id="toast"></div>
-
-<!-- ══ SCREEN 1: KEY ══ -->
-<div class="screen active" id="screen-key">
-  <div class="key-card">
-    <div class="logo-mark">Li</div>
-    <h1>LinkedIn AI Optimizer</h1>
-    <p>Gib deinen Anthropic API Key ein. Er bleibt ausschließlich in deinem Browser – kein Server, keine Datenbank, kein Tracking.</p>
-    <div class="input-wrap">
-      <input type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off">
-      <button class="eye-btn" onclick="toggleKey()">👁</button>
-    </div>
-    <button class="btn-primary" onclick="startApp()">Starten →</button>
-    <div class="security-note">🔒 Dein Key existiert nur lokal in dieser Browser-Sitzung und wird niemals übertragen.</div>
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <!-- Star + Arrow Logo SVG -->
+      <svg class="logo-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Star outline -->
+        <path d="M19 4L21.8 13.2H31.5L23.9 18.8L26.6 28L19 22.4L11.4 28L14.1 18.8L6.5 13.2H16.2L19 4Z" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+        <!-- Teal upward arrow through center -->
+        <path d="M14 26L19 10L24 26" stroke="#00BFA6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M16.5 14L19 10L21.5 14" stroke="#00BFA6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      <div class="logo-text">
+        <span class="logo-name">JobCoach <span>AI</span></span>
+        <span class="logo-tagline">Career Intelligence Platform</span>
+      </div>
+    </a>
+    <nav>
+      <a href="#" class="active">LinkedIn</a>
+      <a href="#">Bewerbung</a>
+      <a href="#">Lebenslauf</a>
+      <a href="#">Branchenwechsel</a>
+      <a href="#" class="nav-cta">Premium</a>
+    </nav>
   </div>
-</div>
+</header>
 
-<!-- ══ SCREEN 2: FORM ══ -->
-<div class="screen" id="screen-form">
-  <div class="topbar">
-    <div class="topbar-logo"><div class="topbar-logo-mark">Li</div> LinkedIn AI Optimizer</div>
-    <div class="key-indicator"><div class="dot"></div> API verbunden</div>
-  </div>
-  <div class="form-main">
-    <div class="form-header">
-      <h2>Profil analysieren</h2>
-      <p>Wähle deine bevorzugte Eingabemethode.</p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      ✦ LinkedIn Optimizer
     </div>
-    <div class="mode-toggle">
-      <button class="mode-btn active" id="mode-btn-form" onclick="setMode('form')"><span>📋</span> Formular ausfüllen</button>
-      <button class="mode-btn" id="mode-btn-paste" onclick="setMode('paste')"><span>⚡</span> Profil-Text einfügen</button>
-    </div>
-
-    <!-- FORM MODE -->
-    <div class="form-mode active" id="mode-form">
-      <div class="form-section">
-        <div class="section-label">01 — Basics</div>
-        <div class="section-title-text">Wer bist du & was machst du?</div>
-        <div class="two-col">
-          <div class="field-group"><label class="field-label">Name</label><input type="text" id="f-name" placeholder="z.B. Anna Müller"></div>
-          <div class="field-group"><label class="field-label">Berufsbezeichnung</label><input type="text" id="f-title" placeholder="z.B. Senior Product Manager"></div>
-        </div>
-        <div class="two-col">
-          <div class="field-group"><label class="field-label">Branche</label>
-            <select id="f-industry">
-              <option value="">Branche wählen...</option>
-              <option>Tech / Software / IT</option><option>Marketing / Kreativ / Design</option>
-              <option>Finance / Consulting / Banking</option><option>HR / People & Culture</option>
-              <option>Sales / Business Development</option><option>Healthcare / Pharma / Medtech</option>
-              <option>Engineering / Produktion</option><option>E-Commerce / Retail</option>
-              <option>Startups / Venture / Gründer</option><option>Andere</option>
-            </select>
-          </div>
-          <div class="field-group"><label class="field-label">Berufserfahrung</label>
-            <select id="f-years">
-              <option value="">Auswählen...</option>
-              <option>Berufseinsteiger (0–2 J.)</option><option>Junior (2–5 J.)</option>
-              <option>Mid-Level (5–10 J.)</option><option>Senior (10–15 J.)</option><option>Expert / Lead (15+ J.)</option>
-            </select>
-          </div>
-        </div>
+    <h1>Dein LinkedIn-Profil,<br><span>radikal optimiert</span></h1>
+    <p>KI analysiert dein Profil, erkennt blinde Flecken und schreibt Headline, About & Bullets — auf deine Zielrolle zugeschnitten.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">3×</span>
+        <span class="stat-label">Mehr Recruiter-Views</span>
       </div>
-      <div class="form-section">
-        <div class="section-label">02 — Ziel & Zielgruppe</div>
-        <div class="section-title-text">Was willst du mit LinkedIn erreichen?</div>
-        <div class="chip-group" id="goals-chips">
-          <button class="chip" onclick="toggleChip(this)">Aktive Jobsuche</button>
-          <button class="chip" onclick="toggleChip(this)">Passiv offen für Angebote</button>
-          <button class="chip" onclick="toggleChip(this)">Personal Brand aufbauen</button>
-          <button class="chip" onclick="toggleChip(this)">Netzwerk erweitern</button>
-          <button class="chip" onclick="toggleChip(this)">Kunden / Leads gewinnen</button>
-          <button class="chip" onclick="toggleChip(this)">Thought Leadership</button>
-          <button class="chip" onclick="toggleChip(this)">Talente rekrutieren</button>
-        </div>
-        <div class="field-group" style="margin-top:14px"><label class="field-label">Zielgruppe</label><input type="text" id="f-audience" placeholder="z.B. Tech-Recruiter DACH, CTOs von Scale-ups, HR-Manager"></div>
+      <div class="stat">
+        <span class="stat-num">87%</span>
+        <span class="stat-label">Besserer Match-Score</span>
       </div>
-      <div class="form-section">
-        <div class="section-label">03 — Aktuelles Profil</div>
-        <div class="section-title-text">Was steht heute in deinem Profil?</div>
-        <div class="field-group"><label class="field-label">Aktuelle Headline</label><input type="text" id="f-headline-old" placeholder="Deine aktuelle LinkedIn Headline (oder leer lassen)"></div>
-        <div class="field-group"><label class="field-label">Aktuelle About / Summary</label><textarea id="f-about-old" rows="3" placeholder="Aktuellen About-Text einfügen..."></textarea></div>
-        <div class="field-group"><label class="field-label">Aktuelle/letzte Stelle</label><textarea id="f-job" rows="3" placeholder="Titel + Firma + kurze Tätigkeitsbeschreibung..."></textarea></div>
+      <div class="stat">
+        <span class="stat-num">< 3 min</span>
+        <span class="stat-label">Bis zum Ergebnis</span>
       </div>
-      <div class="form-section">
-        <div class="section-label">04 — Erfolge & Skills</div>
-        <div class="section-title-text">Womit kannst du punkten?</div>
-        <div class="field-group"><label class="field-label">Deine 3–5 größten Erfolge (gerne mit Zahlen)</label><textarea id="f-achievements" rows="4" placeholder="z.B. Umsatz von 2M auf 5M gesteigert&#10;Team von 3 auf 15 skaliert&#10;Produktlaunch: 50.000 Nutzer in Woche 1"></textarea></div>
-        <div class="two-col">
-          <div class="field-group"><label class="field-label">Wichtigste Keywords</label><input type="text" id="f-keywords" placeholder="z.B. Product Management, SaaS, Agile"></div>
-          <div class="field-group"><label class="field-label">Top-Stärken</label><input type="text" id="f-strengths" placeholder="z.B. analytisch, strategisch, teamorientiert"></div>
-        </div>
-      </div>
-      <div class="form-section">
-        <div class="section-label">05 — Zertifikate & Weiterbildung</div>
-        <div class="section-title-text">Welche Zertifikate oder Ausbildungen hast du?</div>
-        <div class="field-group"><label class="field-label">Zertifikate (eines pro Zeile)</label><textarea id="f-certs" rows="4" placeholder="z.B. AWS Solutions Architect – Amazon (2023)&#10;Google Analytics Certified – Google (2022)&#10;Scrum Master (PSM I) – Scrum.org (2021)&#10;MBA – TU München (2019)"></textarea></div>
-        <div class="field-group"><label class="field-label">Wer hat dich ausgebildet / gefördert? (für Empfehlungstext)</label><input type="text" id="f-recommender" placeholder="z.B. Meine Führungskraft, ein Kunde, ein Kollege"></div>
-      </div>
-      <div class="form-section">
-        <div class="section-label">06 — Ausgabe</div>
-        <div class="section-title-text">Sprache & Ton</div>
-        <div class="two-col">
-          <div class="field-group"><label class="field-label">Sprache</label>
-            <select id="f-lang"><option value="Deutsch">🇩🇪 Deutsch</option><option value="Englisch">🇬🇧 Englisch</option></select>
-          </div>
-          <div class="field-group"><label class="field-label">Zusatzhinweise (optional)</label><input type="text" id="f-extra" placeholder="z.B. Branchenwechsel, Führungsrolle betonen..."></div>
-        </div>
-        <div class="field-group"><label class="field-label">Ton</label>
-          <div class="chip-group" id="tone-chips">
-            <button class="chip selected" onclick="toggleChip(this,'tone')">Professionell</button>
-            <button class="chip" onclick="toggleChip(this,'tone')">Persönlich & authentisch</button>
-            <button class="chip" onclick="toggleChip(this,'tone')">Selbstbewusst & direkt</button>
-            <button class="chip" onclick="toggleChip(this,'tone')">Inspirierend</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PASTE MODE -->
-    <div class="form-mode" id="mode-paste">
-      <div class="paste-section">
-        <h3>Profil-Text direkt einfügen</h3>
-        <div class="paste-instructions">
-          <strong>In 60 Sekunden:</strong>
-          <ol>
-            <li>LinkedIn-Profil im Browser öffnen → "Profil ansehen"</li>
-            <li>Text markieren: Headline, About, Erfahrung, Skills (manuell oder Strg+A)</li>
-            <li>Kopieren (Strg+C) und unten einfügen (Strg+V)</li>
-          </ol>
-        </div>
-        <textarea id="p-raw" rows="14" placeholder="Hier den kopierten LinkedIn-Profil-Text einfügen...&#10;&#10;Je mehr Text, desto besser die Analyse!"></textarea>
-      </div>
-      <div class="paste-section">
-        <h3>Ziel & Ausgabe</h3>
-        <div class="field-group"><label class="field-label">LinkedIn-Ziel</label>
-          <div class="chip-group" id="p-goals-chips">
-            <button class="chip" onclick="toggleChip(this)">Aktive Jobsuche</button>
-            <button class="chip" onclick="toggleChip(this)">Passiv offen</button>
-            <button class="chip" onclick="toggleChip(this)">Personal Brand</button>
-            <button class="chip" onclick="toggleChip(this)">Netzwerk erweitern</button>
-            <button class="chip" onclick="toggleChip(this)">Kunden / Leads</button>
-            <button class="chip" onclick="toggleChip(this)">Thought Leadership</button>
-          </div>
-        </div>
-        <div class="two-col" style="margin-top:14px">
-          <div class="field-group"><label class="field-label">Ausgabesprache</label>
-            <select id="p-lang"><option value="Deutsch">🇩🇪 Deutsch</option><option value="Englisch">🇬🇧 Englisch</option></select>
-          </div>
-          <div class="field-group"><label class="field-label">Ton</label>
-            <select id="p-tone"><option>Professionell</option><option>Persönlich & authentisch</option><option>Selbstbewusst & direkt</option><option>Inspirierend</option></select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <button class="analyze-btn" onclick="runAnalysis()">✦ &nbsp;Profil jetzt analysieren</button>
-  </div>
-</div>
-
-<!-- ══ SCREEN 3: LOADING ══ -->
-<div class="screen" id="screen-loading">
-  <div class="loading-inner" id="loading-inner">
-    <div class="loading-orb"></div>
-    <h2>KI analysiert dein Profil</h2>
-    <p>Claude liest deine Daten und erstellt optimierte Versionen für alle Profil-Sektionen.</p>
-    <div class="loading-steps">
-      <div class="loading-step" id="ls-0"><span class="step-icon">◌</span> Profildaten verarbeiten</div>
-      <div class="loading-step" id="ls-1"><span class="step-icon">◌</span> Headline & Positionierung</div>
-      <div class="loading-step" id="ls-2"><span class="step-icon">◌</span> About / Summary schreiben</div>
-      <div class="loading-step" id="ls-3"><span class="step-icon">◌</span> Erfahrung, Skills & Zertifikate</div>
-      <div class="loading-step" id="ls-4"><span class="step-icon">◌</span> Empfehlungstext & Checkliste</div>
-      <div class="loading-step" id="ls-5"><span class="step-icon">◌</span> Post-Ideen & Tipps</div>
     </div>
   </div>
 </div>
 
-<!-- ══ SCREEN 4: RESULTS ══ -->
-<div class="screen" id="screen-results">
-  <div class="results-topbar">
-    <div class="results-title">✦ Analyse abgeschlossen</div>
-    <div class="results-actions">
-      <button class="btn-ghost" onclick="showScreen('screen-form')">← Neu analysieren</button>
-      <button class="btn-accent" onclick="copyAll()">Alles kopieren</button>
+<!-- MAIN -->
+<div class="main">
+
+  <!-- FREEMIUM BAR -->
+  <div class="freemium-bar" style="margin-bottom: 24px;">
+    <div class="freemium-text">
+      <strong>Kostenlos starten — 3 Analysen pro Monat</strong>
+      <span>Noch 2 freie Analysen übrig diesen Monat</span>
+      <div class="usage-dots">
+        <div class="usage-dot used"></div>
+        <div class="usage-dot"></div>
+        <div class="usage-dot"></div>
+      </div>
     </div>
+    <button class="btn-upgrade">⭐ Auf Premium upgraden</button>
   </div>
-  <div class="results-main">
 
-    <!-- Score -->
-    <div class="score-banner">
-      <div class="score-ring">
-        <svg viewBox="0 0 80 80" fill="none">
-          <circle cx="40" cy="40" r="34" stroke="var(--bg4)" stroke-width="6"/>
-          <circle cx="40" cy="40" r="34" stroke="var(--accent2)" stroke-width="6"
-            stroke-linecap="round" stroke-dasharray="213.6" stroke-dashoffset="213.6"
-            id="score-arc" style="transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)"/>
-        </svg>
-        <span class="score-num" id="score-num">—</span>
+  <div class="optimizer-layout">
+
+    <!-- LEFT: INPUT -->
+    <div>
+
+      <!-- Input Mode Toggle -->
+      <div class="mode-toggle">
+        <button class="mode-btn active" onclick="switchMode('form')">📋 Formular</button>
+        <button class="mode-btn" onclick="switchMode('paste')">📄 LinkedIn-Profil einfügen</button>
       </div>
-      <div class="score-info">
-        <h3 id="score-title">Profil-Score</h3>
-        <p id="score-desc"></p>
-      </div>
-    </div>
 
-    <!-- Tabs -->
-    <div class="tabs-wrap">
-      <div class="result-tabs">
-        <button class="result-tab active" onclick="switchTab(0)">🏷 Headline</button>
-        <button class="result-tab" onclick="switchTab(1)">📝 About</button>
-        <button class="result-tab" onclick="switchTab(2)">💼 Erfahrung</button>
-        <button class="result-tab" onclick="switchTab(3)">🎯 Skills</button>
-        <button class="result-tab" onclick="switchTab(4)">💬 Posts</button>
-        <button class="result-tab" onclick="switchTab(5)">✅ Checkliste</button>
-        <button class="result-tab" onclick="switchTab(6)">💡 Tipps</button>
-      </div>
-    </div>
-
-    <!-- Tab 0: Headline -->
-    <div class="result-panel active" id="tab-0">
-      <div class="compare-card">
-        <div class="compare-header">
-          <h3>LinkedIn Headline <span class="badge badge-new">Optimiert</span></h3>
-          <span class="badge badge-info" id="headline-chars">— Zeichen</span>
-        </div>
-        <div class="compare-body">
-          <div class="compare-col"><div class="compare-col-label"><span class="badge badge-old">Vorher</span></div><div class="compare-col-content" id="headline-old">—</div></div>
-          <div class="compare-col new"><div class="compare-col-label"><span class="badge badge-new">Nachher</span></div><div class="compare-col-content" id="headline-new">—</div></div>
-        </div>
-        <div class="copy-row"><p id="headline-why"></p><button class="copy-btn" id="cp-0" onclick="doCopy('headline-new','cp-0')">📋 Kopieren</button></div>
-      </div>
-    </div>
-
-    <!-- Tab 1: About -->
-    <div class="result-panel" id="tab-1">
-      <div class="compare-card">
-        <div class="compare-header"><h3>About / Summary <span class="badge badge-new">Optimiert</span></h3></div>
-        <div class="compare-body">
-          <div class="compare-col"><div class="compare-col-label"><span class="badge badge-old">Vorher</span></div><div class="compare-col-content" id="about-old">—</div></div>
-          <div class="compare-col new"><div class="compare-col-label"><span class="badge badge-new">Nachher</span></div><div class="compare-col-content" id="about-new">—</div></div>
-        </div>
-        <div class="copy-row"><p id="about-why"></p><button class="copy-btn" id="cp-1" onclick="doCopy('about-new','cp-1')">📋 Kopieren</button></div>
-      </div>
-    </div>
-
-    <!-- Tab 2: Erfahrung -->
-    <div class="result-panel" id="tab-2">
-      <div class="compare-card">
-        <div class="compare-header"><h3>Erfahrungs-Bullets <span class="badge badge-new">Optimiert</span></h3></div>
-        <div class="compare-body">
-          <div class="compare-col"><div class="compare-col-label"><span class="badge badge-old">Vorher</span></div><div class="compare-col-content" id="exp-old">—</div></div>
-          <div class="compare-col new"><div class="compare-col-label"><span class="badge badge-new">Nachher</span></div><div class="compare-col-content" id="exp-new">—</div></div>
-        </div>
-        <div class="copy-row"><p id="exp-why"></p><button class="copy-btn" id="cp-2" onclick="doCopy('exp-new','cp-2')">📋 Kopieren</button></div>
-      </div>
-    </div>
-
-    <!-- Tab 3: Skills -->
-    <div class="result-panel" id="tab-3">
-      <div class="compare-card">
-        <div class="compare-header"><h3>Empfohlene Skills <span class="badge badge-new">Optimiert</span></h3></div>
-        <div class="compare-body">
-          <div class="compare-col full-col"><div class="compare-col-label">Top 3 pinnen + vollständige Liste</div><div class="compare-col-content" id="skills-new" style="color:var(--text)">—</div></div>
-        </div>
-        <div class="copy-row"><p id="skills-why"></p><button class="copy-btn" id="cp-3" onclick="doCopy('skills-new','cp-3')">📋 Kopieren</button></div>
-      </div>
-    </div>
-    </div>
-
-    <!-- Tab 6: Posts -->
-    <div class="result-panel" id="tab-4"><div id="posts-container"></div></div>
-
-    <!-- Tab 7: Checkliste -->
-    <div class="result-panel" id="tab-5">
-      <div class="compare-card" style="overflow:visible">
-        <div class="compare-header"><h3>All-Star Profil Checkliste <span class="badge badge-new">Interaktiv</span></h3></div>
-        <div style="padding:1.5rem">
-          <div class="checklist-progress">
-            <div class="cl-score" id="cl-score">0%</div>
-            <div class="cl-bar-wrap">
-              <div class="cl-bar-label" id="cl-label">0 von 0 erledigt</div>
-              <div class="cl-bar-track"><div class="cl-bar-fill" id="cl-bar" style="width:0%"></div></div>
+      <!-- FORM MODE -->
+      <div class="form-mode" id="formMode">
+        <div class="card" style="margin-bottom: 16px;">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Dein aktuelles Profil</div>
+              <div class="card-subtitle">Fülle aus, was du hast</div>
             </div>
           </div>
-          <div id="checklist-container"></div>
+          <div class="card-body">
+            <div class="field">
+              <label>Aktuelle Berufsbezeichnung</label>
+              <input type="text" id="currentTitle" placeholder="z.B. Senior Account Manager · B2B SaaS" />
+            </div>
+            <div class="field">
+              <label>Aktuelle Headline <span class="optional">(optional)</span></label>
+              <input type="text" id="currentHeadline" placeholder="Was steht aktuell unter deinem Namen?" />
+            </div>
+            <div class="field">
+              <label>About / Zusammenfassung <span class="optional">(optional)</span></label>
+              <textarea id="currentAbout" placeholder="Dein aktueller About-Text..." style="min-height: 80px;"></textarea>
+            </div>
+
+            <!-- Expandable Sections -->
+            <div class="section-group">
+              <button class="section-toggle" onclick="toggleSection('exp')">
+                <span class="toggle-left">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                  Erfahrungs-Bullets
+                </span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="section-content" id="exp">
+                <div class="field" style="margin-bottom: 0;">
+                  <label>Aktuelle Positionsbeschreibungen <span class="optional">(optional)</span></label>
+                  <textarea id="expBullets" placeholder="Füge deine Erfahrungs-Beschreibungen ein..." style="min-height: 120px;"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-group" style="margin-top: 8px;">
+              <button class="section-toggle" onclick="toggleSection('skills')">
+                <span class="toggle-left">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                  Skills & Keywords
+                </span>
+                <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="section-content" id="skills">
+                <div class="field" style="margin-bottom: 0;">
+                  <label>Deine Top-Skills</label>
+                  <input type="text" id="skillsInput" placeholder="z.B. Key Account Management, Salesforce, MEDDIC..." />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">Ziel & Optimierung</div>
+              <div class="card-subtitle">Wohin soll es gehen?</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label>Zielrolle / Wunschposition</label>
+              <input type="text" id="targetRole" placeholder="z.B. Head of Sales · Enterprise · FinTech" />
+            </div>
+            <div class="field">
+              <label>Zielbranche <span class="optional">(optional)</span></label>
+              <input type="text" id="targetIndustry" placeholder="z.B. SaaS, Consulting, Gesundheitswesen..." />
+            </div>
+
+            <div class="field">
+              <label>Tonalität</label>
+              <div class="tone-options">
+                <button class="tone-btn selected" onclick="selectTone(this)">
+                  <span class="tone-icon">🎯</span>
+                  Direkt & klar
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">🤝</span>
+                  Persönlich
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">💼</span>
+                  Formal
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">🚀</span>
+                  Ambitioniert
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">💡</span>
+                  Thought Leader
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">🌍</span>
+                  International
+                </button>
+              </div>
+            </div>
+
+            <button class="btn-analyze" onclick="runAnalysis()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Jetzt <span class="btn-teal">KI-Analyse</span>&nbsp;starten
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Tab 8: Tipps -->
-    <div class="result-panel" id="tab-6"><div class="tips-grid" id="tips-container"></div></div>
+      <!-- PASTE MODE -->
+      <div class="paste-mode" id="pasteMode">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="2" stroke-linecap="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+            </div>
+            <div>
+              <div class="card-title">LinkedIn-Profil einfügen</div>
+              <div class="card-subtitle">Kopiere & füge deinen Profiltext ein</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label>Profiltext</label>
+              <textarea id="pasteText" style="min-height: 200px;" placeholder="Öffne dein LinkedIn-Profil → Markiere alles → Füge hier ein..."></textarea>
+            </div>
+            <div class="field">
+              <label>Zielrolle</label>
+              <input type="text" id="pasteTargetRole" placeholder="z.B. Head of Sales · Enterprise" />
+            </div>
+            <div class="field">
+              <label>Tonalität</label>
+              <div class="tone-options">
+                <button class="tone-btn selected" onclick="selectTone(this)">
+                  <span class="tone-icon">🎯</span>
+                  Direkt & klar
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">🤝</span>
+                  Persönlich
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">💼</span>
+                  Formal
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">🚀</span>
+                  Ambitioniert
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">💡</span>
+                  Thought Leader
+                </button>
+                <button class="tone-btn" onclick="selectTone(this)">
+                  <span class="tone-icon">🌍</span>
+                  International
+                </button>
+              </div>
+            </div>
+            <button class="btn-analyze" onclick="runAnalysis()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Profil <span class="btn-teal">analysieren</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
-  </div>
-</div>
+    </div><!-- end left -->
+
+    <!-- RIGHT: OUTPUT -->
+    <div id="outputCol">
+
+      <!-- Empty state -->
+      <div id="emptyState" class="card" style="text-align: center; padding: 64px 32px;">
+        <div style="width: 72px; height: 72px; background: var(--teal-pale); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00BFA6" stroke-width="1.5" stroke-linecap="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+          </svg>
+        </div>
+        <div style="font-family: 'Plus Jakarta Sans'; font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px;">Bereit zur Analyse</div>
+        <div style="font-size: 13px; color: var(--gray-400); line-height: 1.7; max-width: 280px; margin: 0 auto 28px;">Fülle das Formular aus und starte die KI-Analyse — Ergebnisse erscheinen hier.</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; max-width: 260px; margin: 0 auto;">
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
+            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">1</span>
+            Profil-Score & Bewertung
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
+            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">2</span>
+            Optimierte Headline & About
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
+            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">3</span>
+            Keyword-Empfehlungen
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--gray-600);">
+            <span style="width: 24px; height: 24px; background: var(--teal-pale); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--teal); flex-shrink: 0;">4</span>
+            Profil-Checkliste
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="card loading-state" id="loadingState">
+        <div class="loading-ring"></div>
+        <div class="loading-text">KI analysiert dein Profil…</div>
+        <div class="loading-sub">Dauert nur ein paar Sekunden</div>
+        <div class="loading-steps">
+          <div class="loading-step active" id="step1"><span class="step-dot"></span>Profil-Daten verarbeiten</div>
+          <div class="loading-step" id="step2"><span class="step-dot"></span>Score berechnen</div>
+          <div class="loading-step" id="step3"><span class="step-dot"></span>Headline optimieren</div>
+          <div class="loading-step" id="step4"><span class="step-dot"></span>Keywords analysieren</div>
+          <div class="loading-step" id="step5"><span class="step-dot"></span>Ergebnisse aufbereiten</div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-panel" id="resultsPanel">
+
+        <!-- Score -->
+        <div class="score-card">
+          <div class="score-ring-wrap">
+            <svg viewBox="0 0 100 100">
+              <circle class="score-ring-bg" cx="50" cy="50" r="40"/>
+              <circle class="score-ring-fill" id="scoreRing" cx="50" cy="50" r="40"/>
+            </svg>
+            <div class="score-number" id="scoreDisplay">72<span>/100</span></div>
+          </div>
+          <div class="score-info">
+            <div class="score-label">LinkedIn Score</div>
+            <div class="score-title" id="scoreTitle">Solides Profil — großes Potenzial</div>
+            <div class="score-desc" id="scoreDesc">Dein Profil ist sichtbar, aber Headline und About passen noch nicht zur Zielrolle. Die Optimierungen unten können deinen Score auf 90+ bringen.</div>
+          </div>
+        </div>
+
+        <!-- Headline Optimierung -->
+        <div class="result-section">
+          <div class="result-section-header">
+            <div class="result-section-title">
+              ✏️ Optimierte Headline
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span class="result-tag tag-improved">Verbessert</span>
+              <button class="btn-copy" onclick="copyText('headlineAfter')">📋 Kopieren</button>
+            </div>
+          </div>
+          <div class="result-section-body">
+            <div class="before-after">
+              <div class="ba-panel before">
+                <div class="ba-label">❌ Vorher</div>
+                <div id="headlineBefore">Senior Account Manager bei TechCorp GmbH</div>
+              </div>
+              <div class="ba-panel after">
+                <div class="ba-label">✅ Nachher</div>
+                <div id="headlineAfter">Enterprise Sales Leader | SaaS & B2B | 8-stellige Pipeline aufgebaut | Offen für Head of Sales-Rollen</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- About Optimierung -->
+        <div class="result-section">
+          <div class="result-section-header">
+            <div class="result-section-title">
+              📝 Optimierter About-Text
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span class="result-tag tag-improved">Verbessert</span>
+              <button class="btn-copy" onclick="copyText('aboutAfter')">📋 Kopieren</button>
+            </div>
+          </div>
+          <div class="result-section-body">
+            <div class="ba-panel after" id="aboutAfter" style="background: var(--teal-pale); border: 1px solid rgba(0,191,166,0.3); color: #065F46; font-size: 13px; line-height: 1.8;">
+              Ich helfe B2B-SaaS-Unternehmen dabei, Enterprise-Deals zu schließen — mit einem Ansatz, der auf echter Kundenkenntnis statt auf Scripts basiert.<br><br>
+              In den letzten 8 Jahren habe ich im Key Account Management und Consulting gelernt: Wer die Sprache seiner Kunden spricht, gewinnt. Meine Deals haben eine durchschnittliche Größe von 200k€+, meine Teams übertreffen Quotas konsistent um 20–40%.<br><br>
+              📍 Offen für Head of Sales / VP Sales-Rollen im DACH-Raum — idealerweise FinTech, HR-Tech oder B2B-SaaS.
+            </div>
+          </div>
+        </div>
+
+        <!-- Keywords -->
+        <div class="result-section">
+          <div class="result-section-header">
+            <div class="result-section-title">🔑 Keyword-Empfehlungen</div>
+            <span class="result-tag tag-new">+12 neue Keywords</span>
+          </div>
+          <div class="result-section-body">
+            <div class="result-list" id="keywordList">
+              <div class="result-item">
+                <span class="result-item-icon">🟢</span>
+                <div><strong>Enterprise Sales</strong> — Sehr hohe Recruiter-Suchhäufigkeit für deine Zielrolle. Unbedingt in Headline & About einbauen.</div>
+              </div>
+              <div class="result-item">
+                <span class="result-item-icon">🟢</span>
+                <div><strong>Revenue Growth, Pipeline Management</strong> — Signalisiert strategische Verantwortung. Ideal für Bullets in aktueller Position.</div>
+              </div>
+              <div class="result-item">
+                <span class="result-item-icon">🟡</span>
+                <div><strong>MEDDIC, SPIN Selling, Challenger Sale</strong> — Methodenkenntnisse erhöhen Glaubwürdigkeit. In Skills-Sektion hinzufügen.</div>
+              </div>
+              <div class="result-item">
+                <span class="result-item-icon">🟡</span>
+                <div><strong>Go-to-Market, SaaS Metrics (ARR, CAC, LTV)</strong> — Zeigt Business-Verständnis auf C-Level-Niveau. Wirkt in About-Text sehr stark.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profil-Checkliste -->
+        <div class="result-section">
+          <div class="result-section-header">
+            <div class="result-section-title">☑️ Profil-Checkliste</div>
+            <span class="result-tag tag-tip">6/10 erledigt</span>
+          </div>
+          <div class="result-section-body">
+            <div class="checklist">
+              <div class="check-item done"><span class="check-icon">✅</span> Profilfoto vorhanden</div>
+              <div class="check-item done"><span class="check-icon">✅</span> Deckbild / Banner gesetzt</div>
+              <div class="check-item done"><span class="check-icon">✅</span> Aktuelle Position vollständig</div>
+              <div class="check-item warn"><span class="check-icon">⚠️</span> Headline zu kurz — Potenzial nicht ausgeschöpft</div>
+              <div class="check-item warn"><span class="check-icon">⚠️</span> About-Text fehlt Call-to-Action</div>
+              <div class="check-item fail"><span class="check-icon">❌</span> Skills-Sektion hat weniger als 10 Einträge</div>
+              <div class="check-item fail"><span class="check-icon">❌</span> Kein Featured-Bereich aktiviert</div>
+              <div class="check-item done"><span class="check-icon">✅</span> Empfehlungen / Referenzen vorhanden</div>
+              <div class="check-item warn"><span class="check-icon">⚠️</span> Kontaktinfos unvollständig</div>
+              <div class="check-item done"><span class="check-icon">✅</span> Bildungsabschlüsse vollständig</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upgrade CTA -->
+        <div class="freemium-bar">
+          <div class="freemium-text">
+            <strong>Erfahrungs-Bullets & Post-Vorlagen freischalten</strong>
+            <span>Premium: Unbegrenzte Analysen · Alle Module · Profil gespeichert</span>
+          </div>
+          <button class="btn-upgrade">Premium — €9,90/Mo</button>
+        </div>
+
+      </div><!-- end results -->
+
+    </div><!-- end right col -->
+  </div><!-- end grid -->
+</div><!-- end main -->
+
+<footer>
+  © 2026 <span>JobCoach AI</span> · Career Intelligence Platform · Alle Rechte vorbehalten
+</footer>
 
 <script>
-let apiKey='',currentMode='form',lastResults={},lastFormData={};
-let checkItems=[];
+  function switchMode(mode) {
+    const formMode = document.getElementById('formMode');
+    const pasteMode = document.getElementById('pasteMode');
+    const btns = document.querySelectorAll('.mode-btn');
 
-// KEY
-function toggleKey(){const i=document.getElementById('api-key-input');i.type=i.type==='password'?'text':'password'}
-function startApp(){
-  const k=document.getElementById('api-key-input').value.trim();
-  if(!k.startsWith('sk-ant')){alert('Bitte einen gültigen Anthropic API Key eingeben (beginnt mit sk-ant...)');return;}
-  apiKey=k;showScreen('screen-form');
-}
-document.getElementById('api-key-input').addEventListener('keydown',e=>{if(e.key==='Enter')startApp()});
-
-// MODE
-function setMode(m){
-  currentMode=m;
-  document.getElementById('mode-btn-form').classList.toggle('active',m==='form');
-  document.getElementById('mode-btn-paste').classList.toggle('active',m==='paste');
-  document.getElementById('mode-form').classList.toggle('active',m==='form');
-  document.getElementById('mode-paste').classList.toggle('active',m==='paste');
-}
-
-// CHIPS
-function toggleChip(el,group){
-  if(group==='tone'){document.querySelectorAll('#tone-chips .chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
-  else el.classList.toggle('selected');
-}
-
-// COLLECT
-function collectForm(){
-  const goals=[...document.querySelectorAll('#goals-chips .chip.selected')].map(c=>c.textContent).join(', ')||'Nicht angegeben';
-  const tone=document.querySelector('#tone-chips .chip.selected')?.textContent||'Professionell';
-  return{mode:'form',name:document.getElementById('f-name').value,title:document.getElementById('f-title').value,
-    industry:document.getElementById('f-industry').value,years:document.getElementById('f-years').value,
-    goals,tone,audience:document.getElementById('f-audience').value,
-    headlineOld:document.getElementById('f-headline-old').value,aboutOld:document.getElementById('f-about-old').value,
-    job:document.getElementById('f-job').value,achievements:document.getElementById('f-achievements').value,
-    keywords:document.getElementById('f-keywords').value,strengths:document.getElementById('f-strengths').value,
-    certs:document.getElementById('f-certs').value,recommender:document.getElementById('f-recommender').value,
-    lang:document.getElementById('f-lang').value,extra:document.getElementById('f-extra').value};
-}
-function collectPaste(){
-  const goals=[...document.querySelectorAll('#p-goals-chips .chip.selected')].map(c=>c.textContent).join(', ')||'Nicht angegeben';
-  return{mode:'paste',raw:document.getElementById('p-raw').value,goals,
-    lang:document.getElementById('p-lang').value,tone:document.getElementById('p-tone').value};
-}
-function validate(d){
-  if(d.mode==='form'){if(!d.name)return'Bitte Name eingeben';if(!d.title)return'Bitte Berufsbezeichnung eingeben';if(!d.industry)return'Bitte Branche wählen';if(!d.achievements)return'Bitte mindestens einen Erfolg eintragen';}
-  else{if(!d.raw||d.raw.trim().length<50)return'Bitte mehr Profil-Text einfügen';}
-  return null;
-}
-
-// STEPS
-function stepActive(i){const e=document.getElementById('ls-'+i);if(!e)return;e.classList.add('active');e.querySelector('.step-icon').textContent='⟳'}
-function stepDone(i){const e=document.getElementById('ls-'+i);if(!e)return;e.classList.remove('active');e.classList.add('done');e.querySelector('.step-icon').textContent='✓'}
-function resetSteps(){for(let i=0;i<6;i++){const e=document.getElementById('ls-'+i);if(e){e.className='loading-step';e.querySelector('.step-icon').textContent='◌'}}}
-
-// PROMPT
-// Build context string shared by both calls
-function buildContext(d){
-  if(d.mode==='paste') return 'Ziel: '+d.goals+'. Sprache: '+(d.lang||'Deutsch')+'. Ton: '+(d.tone||'Professionell')+'.\n\nProfiltext:\n'+d.raw;
-  return 'Name: '+d.name+' | Rolle: '+d.title+' | Branche: '+d.industry+' | Erfahrung: '+d.years+'\nZiele: '+d.goals+' | Zielgruppe: '+(d.audience||'n/a')+'\nAktuelle Headline: '+(d.headlineOld||'keine')+'\nAktuelle About: '+(d.aboutOld||'keine')+'\nAktuelle Stelle: '+(d.job||'keine')+'\nErfolge: '+d.achievements+'\nKeywords: '+(d.keywords||'n/a')+' | Staerken: '+(d.strengths||'n/a')+'\nSprache: '+(d.lang||'Deutsch')+' | Ton: '+(d.tone||'Professionell');
-}
-
-const SYSTEM_PROMPT = 'Du bist ein LinkedIn-Optimierungs-API. Gib AUSSCHLIESSLICH valides JSON zurueck. Kein Text, keine Erklaerung, kein Markdown ausser dem JSON. Nur das reine JSON-Objekt.';
-
-function buildPrompt1(d){
-  return 'Analysiere dieses LinkedIn-Profil und gib optimierte Texte als JSON zurueck.\n\n'
-    + buildContext(d)
-    + '\n\nFuelle dieses JSON-Schema aus und gib NUR das fertige JSON zurueck:\n'
-    + '{"score":65,"scoreTitle":"Profil-Bewertung","scoreDesc":"Zwei Saetze zur Bewertung.",'
-    + '"headlineOld":"Aktuelle Headline oder keine","aboutOld":"Aktuelle About max 200 Zeichen","expOld":"Aktuelle Stelle max 200 Zeichen",'
-    + '"headline":{"new":"Optimierte Headline max 220 Zeichen mit Keywords","why":"Ein Satz Begruendung"},'
-    + '"about":{"new":"Vollstaendige About-Sektion 600-800 Zeichen mit Hook Mehrwert Zahlen CTA","why":"Ein Satz"},'
-    + '"experience":{"new":"Bullet 1 Verb+Ergebnis+Zahl\\nBullet 2\\nBullet 3\\nBullet 4\\nBullet 5","why":"Ein Satz"},'
-    + '"skills":{"new":"TOP 3: Skill1, Skill2, Skill3\\n\\nListe:\\nSkill A\\nSkill B\\nSkill C","why":"Ein Satz"}}';
-}
-
-function buildPrompt2(d){
-  return 'Erstelle 3 kurze LinkedIn-Posts fuer dieses Profil.\n\n'
-    + buildContext(d)
-    + '\n\nGib NUR dieses JSON zurueck:\n'
-    + '{"posts":['
-    + '{"title":"Post Typ 1","content":"Post-Text etwa 60 Woerter Hook in erster Zeile"},'
-    + '{"title":"Post Typ 2","content":"Post-Text etwa 60 Woerter"},'
-    + '{"title":"Post Typ 3","content":"Post-Text etwa 60 Woerter"}'
-    + ']}';
-}
-
-function buildPrompt3(d){
-  var ctx = 'Branche: '+(d.industry||'allgemein')+' | Ziel: '+(d.goals||'Sichtbarkeit')+' | Sprache: '+(d.lang||'Deutsch');
-  return 'Erstelle eine LinkedIn-Checkliste und Tipps.\n\n'
-    + ctx
-    + '\n\nGib NUR dieses JSON zurueck:\n'
-    + '{"checklist":['
-    + '{"category":"Grundlagen","item":"Aufgabe","desc":"Erklaerung","priority":"high"},'
-    + '{"category":"Grundlagen","item":"Aufgabe","desc":"Erklaerung","priority":"high"},'
-    + '{"category":"Sichtbarkeit","item":"Aufgabe","desc":"Erklaerung","priority":"high"},'
-    + '{"category":"Sichtbarkeit","item":"Aufgabe","desc":"Erklaerung","priority":"med"},'
-    + '{"category":"Content","item":"Aufgabe","desc":"Erklaerung","priority":"med"},'
-    + '{"category":"Content","item":"Aufgabe","desc":"Erklaerung","priority":"med"},'
-    + '{"category":"Netzwerk","item":"Aufgabe","desc":"Erklaerung","priority":"low"},'
-    + '{"category":"Netzwerk","item":"Aufgabe","desc":"Erklaerung","priority":"low"}'
-    + '],"tips":['
-    + '{"title":"Tipp","text":"Empfehlung","priority":"high"},'
-    + '{"title":"Tipp","text":"Empfehlung","priority":"high"},'
-    + '{"title":"Tipp","text":"Empfehlung","priority":"med"},'
-    + '{"title":"Tipp","text":"Empfehlung","priority":"med"},'
-    + '{"title":"Tipp","text":"Empfehlung","priority":"low"},'
-    + '{"title":"Tipp","text":"Empfehlung","priority":"low"}'
-    + ']}';
-}
-
-async function callAPI(prompt){
-  const res=await fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:4000,system:SYSTEM_PROMPT,messages:[{role:'user',content:prompt}]})
-  });
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
-  const data=await res.json();
-  return data.content?.[0]?.text||'';
-}
-
-function parseJSON(text){
-  const strategies=[
-    ()=>{const m=text.match(/```json\s*([\s\S]*?)\s*```/);return m?JSON.parse(m[1]):null;},
-    ()=>{const m=text.match(/```\s*([\s\S]*?)\s*```/);return m?JSON.parse(m[1]):null;},
-    ()=>{const m=text.match(/\{[\s\S]*\}/);return m?JSON.parse(m[0]):null;},
-    ()=>JSON.parse(text.trim())
-  ];
-  for(const fn of strategies){try{const r=fn();if(r&&typeof r==='object')return r;}catch(e){}}
-  return null;
-}
-
-// ANALYSIS – two sequential API calls
-async function runAnalysis(){
-  const d=currentMode==='form'?collectForm():collectPaste();
-  const err=validate(d);if(err){alert(err);return;}
-  lastFormData=d;
-  showScreen('screen-loading');resetSteps();
-
-  try{
-    // Call 1: Headline, About, Experience, Skills
-    stepActive(0);stepActive(1);stepActive(2);
-    const text1=await callAPI(buildPrompt1(d));
-    const r1=parseJSON(text1);
-    if(!r1){showError('Call 1 fehlgeschlagen.\n\nRohantwort:\n'+text1.substring(0,500));return;}
-    stepDone(0);stepDone(1);stepDone(2);
-
-    // Call 2: Posts
-    stepActive(3);
-    const text2=await callAPI(buildPrompt2(d));
-    const r2=parseJSON(text2);
-    if(!r2){showError('Call 2 fehlgeschlagen.\n\nRohantwort:\n'+text2.substring(0,500));return;}
-    stepDone(3);
-
-    // Call 3: Checklist + Tips
-    stepActive(4);stepActive(5);
-    const text3=await callAPI(buildPrompt3(d));
-    const r3=parseJSON(text3);
-    if(!r3){showError('Call 3 fehlgeschlagen.\n\nRohantwort:\n'+text3.substring(0,500));return;}
-    stepDone(4);stepDone(5);
-
-    // Merge all results
-    const combined={...r1,...r2,...r3};
-    lastResults=combined;
-    setTimeout(()=>renderResults(d,combined),700);
-
-  }catch(e){
-    showError('Verbindungsfehler:\n'+e.message);
+    if (mode === 'form') {
+      formMode.classList.remove('hidden');
+      pasteMode.classList.remove('active');
+      btns[0].classList.add('active');
+      btns[1].classList.remove('active');
+    } else {
+      formMode.classList.add('hidden');
+      pasteMode.classList.add('active');
+      btns[0].classList.remove('active');
+      btns[1].classList.add('active');
+    }
   }
-}
 
-function showError(msg){
-  document.getElementById('loading-inner').innerHTML=`
-    <div style="font-size:2.5rem;margin-bottom:1rem">⚠️</div>
-    <h2 style="color:var(--red);margin-bottom:1rem">Fehler aufgetreten</h2>
-    <pre style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--rsm);padding:1rem;font-size:11px;color:var(--text2);white-space:pre-wrap;word-break:break-word;text-align:left;max-height:220px;overflow-y:auto;margin-bottom:1.5rem">${msg}</pre>
-    <button onclick="resetLoader()" style="padding:10px 28px;border-radius:var(--rsm);border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Outfit',sans-serif;font-weight:600;font-size:14px;cursor:pointer;">← Zurück zum Formular</button>`;
-}
-function resetLoader(){
-  document.getElementById('loading-inner').innerHTML=`<div class="loading-orb"></div><h2>KI analysiert dein Profil</h2><p>Claude liest deine Daten und erstellt optimierte Versionen für alle Profil-Sektionen.</p><div class="loading-steps"><div class="loading-step" id="ls-0"><span class="step-icon">◌</span> Profildaten verarbeiten</div><div class="loading-step" id="ls-1"><span class="step-icon">◌</span> Headline & Positionierung</div><div class="loading-step" id="ls-2"><span class="step-icon">◌</span> About / Summary schreiben</div><div class="loading-step" id="ls-3"><span class="step-icon">◌</span> Erfahrung, Skills & Zertifikate</div><div class="loading-step" id="ls-4"><span class="step-icon">◌</span> Empfehlungstext & Checkliste</div><div class="loading-step" id="ls-5"><span class="step-icon">◌</span> Post-Ideen & Tipps</div></div>`;
-  showScreen('screen-form');
-}
+  function toggleSection(id) {
+    const content = document.getElementById(id);
+    const toggle = content.previousElementSibling;
+    content.classList.toggle('open');
+    toggle.classList.toggle('open');
+  }
 
-// RENDER
-function renderResults(d,r){
-  // Score
-  const score=Math.max(0,Math.min(100,parseInt(r.score)||65));
-  document.getElementById('score-num').textContent=score;
-  document.getElementById('score-title').textContent=r.scoreTitle||'Analysiert';
-  document.getElementById('score-desc').textContent=r.scoreDesc||'';
-  const circ=2*Math.PI*34;
-  setTimeout(()=>{document.getElementById('score-arc').style.strokeDashoffset=circ-(score/100)*circ;},150);
-
-  // Headline
-  const hOld=d.mode==='form'?(d.headlineOld||'(keine)'):(r.headlineOld||'(keine erkannt)');
-  set('headline-old',hOld);set('headline-new',r.headline?.new||'');
-  document.getElementById('headline-chars').textContent=(r.headline?.new||'').length+' / 220 Zeichen';
-  set('headline-why',r.headline?.why||'');
-
-  // About
-  const aOld=d.mode==='form'?(d.aboutOld||'(keine)'):(r.aboutOld||'(keine erkannt)');
-  set('about-old',aOld);set('about-new',r.about?.new||'');set('about-why',r.about?.why||'');
-
-  // Experience
-  const eOld=d.mode==='form'?(d.job||'(keine)'):(r.expOld||'(keine erkannt)');
-  set('exp-old',eOld);set('exp-new',r.experience?.new||'');set('exp-why',r.experience?.why||'');
-
-  // Skills
-  set('skills-new',r.skills?.new||'');set('skills-why',r.skills?.why||'');
-  // Posts
-  const pc=document.getElementById('posts-container');pc.innerHTML='';
-  (r.posts||[]).forEach((p,i)=>{
-    const card=document.createElement('div');card.className='post-card';
-    const bid='cp-post-'+i;
-    card.innerHTML=`<div class="post-card-header"><h4>Post ${i+1}: ${p.title||''}</h4><button class="copy-btn" id="${bid}">📋 Kopieren</button></div><p>${(p.content||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</p>`;
-    pc.appendChild(card);
-    document.getElementById(bid).addEventListener('click',()=>writeClipboard(p.content||'',bid));
-  });
-
-  // Checklist
-  checkItems=r.checklist||[];
-  renderChecklist();
-
-  // Tips
-  const tc=document.getElementById('tips-container');tc.innerHTML='';
-  (r.tips||[]).forEach(t=>{
-    const c=document.createElement('div');c.className=`tip-card priority-${t.priority||'low'}`;
-    c.innerHTML=`<h4>${t.title||''}</h4><p>${t.text||''}</p>`;tc.appendChild(c);
-  });
-
-  showScreen('screen-results');switchTab(0);
-}
-
-
-function renderChecklist(){
-  const container=document.getElementById('checklist-container');container.innerHTML='';
-  const categories=[...new Set(checkItems.map(c=>c.category))];
-  categories.forEach(cat=>{
-    const group=document.createElement('div');group.className='checklist-group';
-    group.innerHTML=`<h4>${cat}</h4>`;
-    checkItems.filter(c=>c.category===cat).forEach((item,globalIdx)=>{
-      const realIdx=checkItems.indexOf(item);
-      const row=document.createElement('div');row.className='check-item';
-      const pClass=item.priority==='high'?'cp-high':item.priority==='med'?'cp-med':'cp-low';
-      row.innerHTML=`
-        <div class="check-box" id="cb-${realIdx}" onclick="toggleCheck(${realIdx})"></div>
-        <div class="check-content">
-          <div class="check-title">${item.item||''}<span class="check-priority ${pClass}">${item.priority||''}</span></div>
-          <div class="check-desc">${item.desc||''}</div>
-        </div>`;
-      group.appendChild(row);
+  function selectTone(btn) {
+    const idx = Array.from(btn.parentElement.children).indexOf(btn);
+    document.querySelectorAll('.tone-options').forEach(group => {
+      Array.from(group.children).forEach((b, i) => {
+        b.classList.toggle('selected', i === idx);
+      });
     });
-    container.appendChild(group);
-  });
-  updateCheckProgress();
-}
-function toggleCheck(i){
-  if(!checkItems[i])return;
-  checkItems[i]._done=!checkItems[i]._done;
-  const box=document.getElementById('cb-'+i);
-  if(box){box.classList.toggle('checked',checkItems[i]._done);box.textContent=checkItems[i]._done?'✓':'';}
-  updateCheckProgress();
-}
-function updateCheckProgress(){
-  const total=checkItems.length;const done=checkItems.filter(c=>c._done).length;
-  const pct=total?Math.round(done/total*100):0;
-  document.getElementById('cl-score').textContent=pct+'%';
-  document.getElementById('cl-label').textContent=done+' von '+total+' erledigt';
-  document.getElementById('cl-bar').style.width=pct+'%';
-}
+  }
 
-// TABS
-function switchTab(i){
-  document.querySelectorAll('.result-tab').forEach((t,idx)=>t.classList.toggle('active',idx===i));
-  document.querySelectorAll('.result-panel').forEach((p,idx)=>p.classList.toggle('active',idx===i));
-}
+  function runAnalysis() {
+    const empty = document.getElementById('emptyState');
+    const loading = document.getElementById('loadingState');
+    const results = document.getElementById('resultsPanel');
 
-// UTILS
-function set(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+    empty.style.display = 'none';
+    loading.classList.add('active');
+    results.classList.remove('active');
 
-// COPY
-function showToast(msg){
-  const t=document.getElementById('toast');t.textContent=msg||'✓ Kopiert!';t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2200);
-}
-function markBtn(id){
-  const btn=document.getElementById(id);if(!btn)return;
-  const orig=btn.innerHTML;btn.innerHTML='✓ Kopiert!';btn.classList.add('copied');
-  setTimeout(()=>{btn.innerHTML=orig;btn.classList.remove('copied');},2200);
-}
-function doCopy(elementId,btnId){
-  const el=document.getElementById(elementId);if(!el)return;
-  writeClipboard(el.textContent||el.innerText||'',btnId);
-}
-function writeClipboard(text,btnId){
-  if(!text||!text.trim()){showToast('⚠ Nichts zu kopieren');return;}
-  if(navigator.clipboard&&window.isSecureContext){
-    navigator.clipboard.writeText(text).then(()=>{if(btnId)markBtn(btnId);showToast('✓ Kopiert!');}).catch(()=>fallback(text,btnId));
-  } else fallback(text,btnId);
-}
-function fallback(text,btnId){
-  const ta=document.createElement('textarea');ta.value=text;
-  ta.setAttribute('readonly','');ta.style.cssText='position:absolute;left:-9999px;top:0;opacity:0;pointer-events:none';
-  document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,ta.value.length);
-  let ok=false;try{ok=document.execCommand('copy');}catch(e){}
-  document.body.removeChild(ta);
-  if(ok){if(btnId)markBtn(btnId);showToast('✓ Kopiert!');}
-  else showToast('⚠ Bitte manuell markieren und kopieren');
-}
-function copyAll(){
-  if(!lastResults)return;
-  const r=lastResults;
-  const parts=[
-    '═══ LINKEDIN PROFIL – KI-OPTIMIERT ═══','',
-    '── HEADLINE ──',r.headline?.new||'','',
-    '── ABOUT / SUMMARY ──',r.about?.new||'','',
-    '── ERFAHRUNG – BULLETS ──',r.experience?.new||'','',
-    '── SKILLS ──',r.skills?.new||'','',
-    ...(r.posts||[]).map((p,i)=>`\n── POST ${i+1}: ${p.title||''} ──\n${p.content||''}`)
-  ];
-  writeClipboard(parts.join('\n'),null);
-}
+    const steps = ['step1','step2','step3','step4','step5'];
+    let i = 0;
 
-// SCREEN
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');window.scrollTo(0,0);
-}
+    function advanceStep() {
+      if (i > 0) {
+        document.getElementById(steps[i-1]).classList.remove('active');
+        document.getElementById(steps[i-1]).classList.add('done');
+      }
+      if (i < steps.length) {
+        document.getElementById(steps[i]).classList.add('active');
+        i++;
+        setTimeout(advanceStep, 600);
+      } else {
+        setTimeout(showResults, 400);
+      }
+    }
+
+    advanceStep();
+
+    // Personalise results with input
+    const role = document.getElementById('targetRole').value || 'Head of Sales';
+    const title = document.getElementById('currentTitle').value || 'Senior Account Manager';
+
+    document.getElementById('headlineBefore').textContent = title + ' | Auf der Suche nach neuen Möglichkeiten';
+    document.getElementById('headlineAfter').textContent = 'Enterprise Sales Leader | SaaS & B2B | 8-stellige Pipeline | Offen für ' + role + '-Rollen';
+  }
+
+  function showResults() {
+    const loading = document.getElementById('loadingState');
+    const results = document.getElementById('resultsPanel');
+
+    loading.classList.remove('active');
+    results.classList.add('active');
+
+    // Animate score ring
+    setTimeout(() => {
+      const score = 72;
+      const circumference = 251;
+      const offset = circumference - (score / 100) * circumference;
+      document.getElementById('scoreRing').style.strokeDashoffset = offset;
+    }, 100);
+
+    // Reset loading steps for next time
+    document.querySelectorAll('.loading-step').forEach(s => {
+      s.classList.remove('active', 'done');
+    });
+    document.getElementById('step1').classList.add('active');
+  }
+
+  function copyText(id) {
+    const el = document.getElementById(id);
+    const text = el.textContent || el.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = event.target;
+      const orig = btn.textContent;
+      btn.textContent = '✅ Kopiert!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  }
 </script>
 </body>
 </html>
