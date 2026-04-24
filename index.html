@@ -218,6 +218,20 @@ textarea { min-height:80px; line-height:1.6; }
 
 @keyframes spin { to { transform:rotate(360deg); } }
 @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ─── VORHER/NACHHER ─── */
+  .ba-toggle-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .ba-tab { font-family:'Plus Jakarta Sans',sans-serif; font-size:12px; font-weight:600; padding:5px 14px; border-radius:20px; border:1.5px solid var(--gray-200); background:transparent; color:var(--gray-400); cursor:pointer; transition:all 0.2s; }
+  .ba-tab.active-before { background:#FEF2F2; border-color:#FCA5A5; color:#991B1B; }
+  .ba-tab.active-after { background:var(--teal-pale); border-color:rgba(0,191,166,0.4); color:#065F46; }
+  .ba-diff-wrap { position:relative; }
+  .ba-before-panel { display:none; padding:12px 14px; background:#FEF2F2; border:1.5px solid #FCA5A5; border-radius:10px; font-size:13px; line-height:1.7; color:#7F1D1D; white-space:pre-line; }
+  .ba-before-panel.visible { display:block; }
+  .diff-removed { background:#FECACA; border-radius:3px; padding:1px 2px; text-decoration:line-through; color:#991B1B; }
+  .diff-added { background:#BBF7D0; border-radius:3px; padding:1px 2px; color:#14532D; font-weight:600; }
+  .ba-legend { display:flex; gap:12px; margin-top:8px; font-size:11px; color:var(--gray-400); }
+  .ba-legend span { display:flex; align-items:center; gap:4px; }
+  .leg-dot { width:10px; height:10px; border-radius:3px; display:inline-block; }
 </style>
 </head>
 <body>
@@ -955,29 +969,15 @@ function renderResults(data) {
   document.getElementById('headline-tone-badge').textContent = tones.headline;
   document.getElementById('about-tone-badge').textContent = tones.about;
 
-  // Headline variants
-  const hv = document.getElementById('headline-variants');
-  hv.innerHTML = data.headline_variants.map((v, i) => `
-    <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('headline',${i},this)">
-      <div class="variant-tone-badge">${v.tone}</div>
-      <div class="variant-label">Variante ${i+1}</div>
-      <div class="variant-text">${v.text}</div>
-    </div>
-  `).join('');
+  // Headline variants with diff
+  const currentHeadlineVal = document.getElementById('currentHeadline').value.trim();
+  renderVariantWithDiff('headline', data.headline_variants, currentHeadlineVal);
   selectedVariants.headline = 0;
-  document.getElementById('headline-edit-text').value = data.headline_variants[0].text;
 
-  // About variants
-  const av = document.getElementById('about-variants');
-  av.innerHTML = data.about_variants.map((v, i) => `
-    <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('about',${i},this)">
-      <div class="variant-tone-badge">${v.tone}</div>
-      <div class="variant-label">Variante ${i+1}</div>
-      <div class="variant-text" style="white-space:pre-line;">${v.text}</div>
-    </div>
-  `).join('');
+  // About variants with diff
+  const currentAboutVal = document.getElementById('currentAbout').value.trim();
+  renderVariantWithDiff('about', data.about_variants, currentAboutVal);
   selectedVariants.about = 0;
-  document.getElementById('about-edit-text').value = data.about_variants[0].text;
 
   // Keywords
   const kwResults = document.getElementById('kw-results');
@@ -1062,14 +1062,10 @@ Antworte NUR mit JSON: {"variants": [{"tone": "...", "text": "..."}, ...]}`;
     const result = JSON.parse(clean);
 
     const container = document.getElementById(section + '-variants');
-    container.innerHTML = result.variants.map((v, i) => `
-      <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('${section}',${i},this)">
-        <div class="variant-tone-badge">${v.tone}</div>
-        <div class="variant-label">Variante ${i+1}</div>
-        <div class="variant-text" style="${section==='about'?'white-space:pre-line;':''}">${v.text}</div>
-      </div>
-    `).join('');
-    document.getElementById(section + '-edit-text').value = result.variants[0].text;
+    const curText = section === 'headline'
+      ? document.getElementById('currentHeadline').value.trim()
+      : document.getElementById('currentAbout').value.trim();
+    renderVariantWithDiff(section, result.variants, curText);
   } catch(e) {
     // fallback: just shuffle existing
   }
@@ -1086,6 +1082,107 @@ function giveFeedback(btn, section, type) {
     feedback[section] = feedback[section].filter(f => f !== type);
   }
 }
+
+  // ─── VORHER / NACHHER DIFF ───
+  function wordDiff(before, after) {
+    if (!before || before.trim() === '') return { beforeHtml: '<em style="color:var(--gray-400);">Kein vorheriger Text vorhanden</em>', afterHtml: after };
+    const bWords = before.split(/([ \t\n]+)/);
+    const aWords = after.split(/([ \t\n]+)/);
+
+    // Simple LCS-based word diff
+    const m = bWords.length, n = aWords.length;
+    const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+    for (let i = 1; i <= m; i++)
+      for (let j = 1; j <= n; j++)
+        dp[i][j] = bWords[i-1] === aWords[j-1] ? dp[i-1][j-1]+1 : Math.max(dp[i-1][j], dp[i][j-1]);
+
+    let i = m, j = n;
+    const ops = [];
+    while (i > 0 || j > 0) {
+      if (i > 0 && j > 0 && bWords[i-1] === aWords[j-1]) { ops.unshift({type:'eq', val:bWords[i-1]}); i--; j--; }
+      else if (j > 0 && (i === 0 || dp[i][j-1] >= dp[i-1][j])) { ops.unshift({type:'add', val:aWords[j-1]}); j--; }
+      else { ops.unshift({type:'del', val:bWords[i-1]}); i--; }
+    }
+
+    let beforeHtml = '', afterHtml = '';
+    ops.forEach(op => {
+      const v = op.val.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      if (op.type === 'eq') { beforeHtml += v; afterHtml += v; }
+      else if (op.type === 'del') { beforeHtml += `<span class="diff-removed">${v}</span>`; }
+      else { afterHtml += `<span class="diff-added">${v}</span>`; }
+    });
+    return { beforeHtml, afterHtml };
+  }
+
+  function renderVariantWithDiff(section, variants, currentText) {
+    const container = document.getElementById(section + '-variants');
+    container.innerHTML = variants.map((v, i) => {
+      const diff = wordDiff(currentText, v.text);
+      const isMultiline = v.text.includes('\n') || v.text.length > 120;
+      return `
+        <div class="variant-card ${i===0?'selected':''}" onclick="selectVariant('${section}',${i},this)">
+          <div class="variant-tone-badge">${v.tone}</div>
+          <div class="variant-label">Variante ${i+1}</div>
+
+          ${currentText ? `
+          <div class="ba-toggle-row">
+            <button class="ba-tab active-after" onclick="showAfter(event,'${section}-v${i}')">✅ Nachher</button>
+            <button class="ba-tab" onclick="showBefore(event,'${section}-v${i}')">❌ Vorher</button>
+            <button class="ba-tab" onclick="showDiff(event,'${section}-v${i}')">🔍 Änderungen</button>
+          </div>` : ''}
+
+          <div class="ba-diff-wrap">
+            <div class="variant-text" id="${section}-v${i}-after" style="${isMultiline?'white-space:pre-line;':''}">${diff.afterHtml}</div>
+            <div class="ba-before-panel" id="${section}-v${i}-before">${diff.beforeHtml}</div>
+          </div>
+
+          ${currentText ? `
+          <div class="ba-legend">
+            <span><span class="leg-dot" style="background:#BBF7D0;border:1px solid #86EFAC;"></span> Neu hinzugefügt</span>
+            <span><span class="leg-dot" style="background:#FECACA;border:1px solid #FCA5A5;"></span> Entfernt</span>
+          </div>` : ''}
+        </div>
+      `;
+    }).join('');
+    // sync edit area
+    document.getElementById(section + '-edit-text').value = variants[0].text;
+  }
+
+  function showAfter(e, id) {
+    e.stopPropagation();
+    const wrap = e.target.closest('.variant-card').querySelector('.ba-diff-wrap');
+    wrap.querySelector('[id$="-after"]').style.display = 'block';
+    wrap.querySelector('[id$="-before"]').classList.remove('visible');
+    setActiveTab(e.target, 'after');
+  }
+
+  function showBefore(e, id) {
+    e.stopPropagation();
+    const wrap = e.target.closest('.variant-card').querySelector('.ba-diff-wrap');
+    wrap.querySelector('[id$="-after"]').style.display = 'none';
+    wrap.querySelector('[id$="-before"]').classList.add('visible');
+    setActiveTab(e.target, 'before');
+  }
+
+  function showDiff(e, id) {
+    e.stopPropagation();
+    const wrap = e.target.closest('.variant-card').querySelector('.ba-diff-wrap');
+    // Show after panel WITH diff highlights visible
+    wrap.querySelector('[id$="-after"]').style.display = 'block';
+    wrap.querySelector('[id$="-before"]').classList.remove('visible');
+    setActiveTab(e.target, 'diff');
+  }
+
+  function setActiveTab(clickedBtn, mode) {
+    const row = clickedBtn.closest('.ba-toggle-row');
+    row.querySelectorAll('.ba-tab').forEach(b => {
+      b.classList.remove('active-after','active-before');
+    });
+    if (mode === 'after') clickedBtn.classList.add('active-after');
+    else if (mode === 'before') clickedBtn.classList.add('active-before');
+    else { clickedBtn.style.background='var(--gray-100)'; clickedBtn.style.color='var(--navy)'; }
+  }
+
 </script>
 </body>
 </html>
