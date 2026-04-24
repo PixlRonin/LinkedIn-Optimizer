@@ -364,9 +364,9 @@ textarea{min-height:80px;line-height:1.6;}
             <div><div class="ctitle">Über dich</div><div class="csub">Je mehr Details, desto persönlicher das Ergebnis</div></div>
           </div>
           <div class="card-body">
-            <div class="field"><label>Aktuelle Position</label><input type="text" id="fTitle" placeholder="z.B. Senior Account Manager · B2B SaaS · TechCorp GmbH"></div>
-            <div class="field"><label>Berufserfahrung</label><input type="text" id="fExp" placeholder="z.B. 8 Jahre B2B-Vertrieb, davon 3 Jahre Enterprise-Deals"></div>
-            <div class="field"><label>Größte Erfolge & Zahlen</label><textarea id="fAchiev" style="min-height:85px;" placeholder="z.B.:&#10;• Pipeline von €4M aufgebaut&#10;• Quota 140% — 3 Jahre in Folge&#10;• Team von 6 Personen geführt&#10;• Durchschnittlicher Deal: €200k+"></textarea></div>
+            <div class="field"><label>Aktuelle Position</label><input type="text" id="fTitle" placeholder="z.B. Projektmanager · KI-Spezialist · E-Mobility"></div>
+            <div class="field"><label>Berufserfahrung</label><input type="text" id="fExp" placeholder="z.B. 6 Jahre Projektmanagement, davon 3 Jahre im KI-Umfeld"></div>
+            <div class="field"><label>Größte Erfolge & Zahlen</label><textarea id="fAchiev" style="min-height:85px;" placeholder="z.B.:&#10;• 12 Projekte gleichzeitig koordiniert&#10;• KI-Einführung für 200 Mitarbeiter umgesetzt&#10;• Kosten um 30% reduziert&#10;• Zertifizierungen: PMP, PRINCE2, Scrum Master"></textarea></div>
             <div class="field"><label>Persönlichkeit / Arbeitsstil <span class="opt">(optional)</span></label><input type="text" id="fPers" placeholder="z.B. direkt, analytisch, Netzwerker, lösungsorientiert"></div>
           </div>
         </div>
@@ -378,7 +378,7 @@ textarea{min-height:80px;line-height:1.6;}
           </div>
           <div class="card-body">
             <div class="field"><label>Zielrolle <span class="opt">(optional)</span></label><input type="text" id="fTarget" placeholder="z.B. Head of Sales · VP Sales · oder leer lassen für stärkenbasierte Optimierung"></div>
-            <div class="field"><label>Zielbranche <span class="opt">(optional)</span></label><input type="text" id="fIndustry" placeholder="z.B. FinTech, HR-Tech, SaaS, Consulting"></div>
+            <div class="field"><label>Zielbranche <span class="opt">(optional)</span></label><input type="text" id="fIndustry" placeholder="z.B. E-Mobility, KI, Technologie, Industrie 4.0"></div>
             <div class="field">
               <label>Wunsch-Keywords</label>
               <div class="kw-wrap"><input type="text" id="kwF" placeholder="Keyword + Enter" onkeydown="if(event.key==='Enter'){addKw('f');event.preventDefault();}"><button class="btn-kw" onclick="addKw('f')">+</button></div>
@@ -506,6 +506,8 @@ textarea{min-height:80px;line-height:1.6;}
           <div class="lstep" id="ls6"><span class="ldot"></span>Checkliste & Score</div>
         </div>
       </div>
+
+      <div id="apiStatusBar" style="display:none;background:#FEF3C7;border:1px solid #FCD34D;border-radius:12px;padding:12px 16px;margin-bottom:14px;color:#92400E;line-height:1.5;"></div>
 
       <div class="results" id="resultsDiv">
 
@@ -900,10 +902,13 @@ async function startAnalysis() {
 
   const prompt = buildPrompt(profile, feedbackHints);
 
+  // Show API status indicator
+  const statusBar = document.getElementById('apiStatusBar');
+
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
@@ -911,16 +916,24 @@ async function startAnalysis() {
       })
     });
     const data = await resp.json();
+    if (!getApiKey()) throw new Error('Kein API-Key gesetzt');
+    if (data.error) throw new Error(data.error.message);
     const raw = data.content.map(c => c.text||'').join('');
     const clean = raw.replace(/```json[\s\S]*?```/g, m => m.slice(7,-3)).replace(/```/g,'').trim();
     const result = JSON.parse(clean);
     lastData = result;
     stopLoadingAnim();
     document.getElementById('loadCard').classList.remove('on');
+    if (statusBar) statusBar.style.display = 'none';
     renderResults(result, profile);
   } catch(err) {
     stopLoadingAnim();
     document.getElementById('loadCard').classList.remove('on');
+    // Show demo notice
+    if (statusBar) {
+      statusBar.style.display = 'flex';
+      statusBar.innerHTML = `<span style="font-size:13px;">⚠️ <strong>Vorschau-Modus:</strong> API nicht erreichbar in dieser Umgebung. Die Ergebnisse unten basieren auf deinen Eingaben, werden aber lokal generiert — nicht von Claude AI. <a href="#" onclick="downloadApp()" style="color:var(--teal);font-weight:600;">App lokal öffnen →</a></span>`;
+    }
     const demo = buildDemo(profile);
     lastData = demo;
     renderResults(demo, profile);
@@ -953,100 +966,161 @@ Headline-Ton: ${p.toneHL}
 About-Ton: ${p.toneAB}
 Bullets-Ton: ${p.toneBU}`;
 
-  return `Du bist ein Senior LinkedIn-Karriere-Coach für den DACH-Markt. Analysiere und optimiere das folgende Profil.
+  return `Du bist ein erfahrener LinkedIn-Coach im DACH-Raum. Deine Aufgabe: das Profil dieser Person optimieren — nicht ein generisches Muster drüberbügeln.
 
 ${context}
-${fbHints ? '\nFEEDBACK aus vorheriger Runde — bitte berücksichtigen: ' + fbHints : ''}
+${fbHints ? '\nFEEDBACK aus vorheriger Runde — unbedingt berücksichtigen: ' + fbHints : ''}
 
-WICHTIGE REGELN:
-1. Die 3 Headline-Varianten MÜSSEN sich DEUTLICH voneinander unterscheiden — verschiedene Struktur, verschiedene Schwerpunkte, verschiedene Länge
-2. Die 2 About-Varianten: Variante 1 ausführlich (4 Absätze), Variante 2 kompakt (2 Absätze) — INHALTLICH UNTERSCHIEDLICH
-3. Tonalität SPÜRBAR anwenden — "Direkt & klar" klingt ANDERS als "Persönlich" oder "Ambitioniert"
-4. Bullets mit konkreten Metriken und Aktionsverben
-5. Posts: authentisch, kein Corporate-Speak, LinkedIn-typisches Format mit Zeilenumbrüchen
+DEINE WICHTIGSTEN REGELN:
+
+REGEL 1 — NUR was zum Profil passt:
+Leite ALLE Inhalte (Keywords, Posts, Bullets, Headline) direkt aus den angegebenen Informationen ab.
+Wenn jemand Projektmanager und KI-Spezialist ist, dann kommen Keywords wie "Projektmanagement", "KI-Strategie", "E-Mobility" raus — NIEMALS branchenfremde Begriffe wie "Enterprise Sales" oder "Pipeline Management".
+Wenn keine Zielrolle angegeben wurde: analysiere das Profil und optimiere es für die naheliegendsten Rollen basierend auf den Stärken.
+
+REGEL 2 — Menschlicher Ton, keine KI-Sprache:
+Verboten: "Ich bin leidenschaftlich", "Ich bringe Mehrwert", "nachhaltig", "mit Expertise", "ich bin motiviert", "ich bin begeistert", "ich treibe voran"
+Erlaubt: konkrete Aussagen, echte Zahlen, kurze Sätze, natürliche Sprache wie ein Mensch sie schreibt
+Kein LinkedIn-Bingo. Keine Phrasen die jeder kopiert.
+Beispiel schlecht: "Ich bin ein leidenschaftlicher Projektmanager, der Mehrwert schafft."
+Beispiel gut: "Ich manage Projekte. Was das heißt: Chaos ordnen, Teams fokussieren, Deadlines halten."
+
+REGEL 3 — Varianten WIRKLICH unterschiedlich machen:
+Headline: Variante 1 = Titel-fokussiert | Variante 2 = Ergebnis-fokussiert | Variante 3 = Frage oder ungewöhnlicher Einstieg
+About: Variante 1 = ausführlich mit Story (4 Absätze) | Variante 2 = kompakt, fast telegrafisch (2 Absätze) — ANDERER Opener, anderer Rhythmus
+
+REGEL 4 — Tonalität spürbar umsetzen:
+"Direkt & klar" = kurze Sätze, keine Adjektive, Fakten first
+"Persönlich" = Ich-Perspektive, konkrete Momente, echte Sprache
+"Ambitioniert" = Zahlen, Wachstum, nächste Stufe sichtbar machen
+"Thought Leader" = Meinung haben, etwas behaupten, Fragen stellen
+"Formal" = strukturiert, keine Umgangssprache, sachlich
+"International" = Englische Fachbegriffe eingestreut, globaler Kontext
+
+REGEL 5 — Checklist-Status realistisch einschätzen:
+Wenn keine Infos über Profilfoto / Featured vorliegen → "warn" (nicht "fail")
+Nur "ok" wenn klar erkennbar vorhanden, "fail" nur bei klaren Lücken die aus dem Text erkennbar sind.
 
 Antworte NUR mit validem JSON (kein Markdown, keine Erklärungen):
 {
   "score": <40-95>,
-  "scoreTitle": "<kurze präzise Bewertung>",
-  "scoreDesc": "<2 konkrete Sätze: was gut ist + was fehlt>",
+  "scoreTitle": "<max 6 Wörter, ehrlich und direkt>",
+  "scoreDesc": "<2 Sätze: was konkret fehlt und was den größten Unterschied machen würde — profil-spezifisch, nicht generisch>",
   "headline_variants": [
-    {"tone": "<exakter Ton + was diese Variante anders macht>", "text": "<Variante 1 — max 200 Zeichen, fokus auf Rolle+Wert>"},
-    {"tone": "<Ton + anderer Ansatz>", "text": "<Variante 2 — ANDERE Struktur, andere Betonung>"},
-    {"tone": "<Ton + dritter Ansatz>", "text": "<Variante 3 — nochmals anders, z.B. mit Zahlen oder Frage>"}
+    {"tone": "Titel-fokussiert", "text": "<Variante 1: Kernrolle(n) + Fachgebiet, max 180 Zeichen>"},
+    {"tone": "Ergebnis-fokussiert", "text": "<Variante 2: Was bringt diese Person, was bewirkt sie — andere Struktur als V1>"},
+    {"tone": "Ungewöhnlicher Einstieg", "text": "<Variante 3: Frage, provokante Aussage oder unerwarteter Einstieg>"}
   ],
   "about_variants": [
-    {"tone": "<Ton — ausführliche Version>", "text": "<4 Absätze: Hook → Expertise → Erfolge mit Zahlen → CTA. Persönlich, keine Floskeln.>"},
-    {"tone": "<Ton — kompakte Version>", "text": "<2 Absätze: Kernaussage + CTA. Prägnant, anderer Opener als Variante 1.>"}
+    {"tone": "Ausführlich — Story-Format", "text": "<4 Absätze. Kein KI-Bingo. Echter Einstieg mit konkretem Moment oder Aussage. Endet mit klarem CTA.>"},
+    {"tone": "Kompakt — direkt auf den Punkt", "text": "<2 kurze Absätze. Komplett anderer Opener. Kurze Sätze. Kein Wort zu viel.>"}
   ],
   "bullets": [
-    {"position": "<Positionstitel>", "original": "<alter Bullet oder leer>", "optimized": ["<Bullet 1 mit Metrik>", "<Bullet 2 mit Aktionsverb>", "<Bullet 3>"]},
-    {"position": "<Zweite Position falls vorhanden>", "original": "", "optimized": ["<Bullet 1>", "<Bullet 2>"]}
+    {"position": "<Positionstitel aus dem Profil>", "original": "<vorhandener Text oder leer>", "optimized": ["<starkes Aktionsverb + konkretes Ergebnis/Metrik>", "<zweiter Bullet>", "<dritter Bullet>"]},
+    {"position": "<zweite Position falls erkennbar>", "original": "", "optimized": ["<Bullet 1>", "<Bullet 2>"]}
   ],
   "keywords": [
-    {"kw": "<Keyword>", "priority": "hoch", "reason": "<warum wichtig für Zielrolle, konkret>"},
+    {"kw": "<Keyword direkt aus dem Fachgebiet dieser Person>", "priority": "hoch", "reason": "<warum konkret für dieses Profil — keine generischen Aussagen>"},
     {"kw": "<Keyword>", "priority": "hoch", "reason": "<konkret>"},
     {"kw": "<Keyword>", "priority": "mittel", "reason": "<konkret>"},
     {"kw": "<Keyword>", "priority": "mittel", "reason": "<konkret>"},
     {"kw": "<Keyword>", "priority": "niedrig", "reason": "<konkret>"}
   ],
   "posts": [
-    {"type": "Karriere-Story", "hook": "Persönliche Erfahrung", "text": "<Post 1: Story-Format, 150-200 Wörter, mit Zeilenumbrüchen, endet mit Frage ans Netzwerk>"},
-    {"type": "Fachbeitrag", "hook": "Branchen-Insight", "text": "<Post 2: Expertise zeigen, 3-5 Punkte, praktischer Tipp>"},
-    {"type": "Karriere-Update", "hook": "Transparenz & Authentizität", "text": "<Post 3: offen über Karrierewechsel / Ziel, kurz, direkt, einladend>"}
+    {"type": "Persönliche Geschichte", "hook": "Konkreter Moment aus dem Beruf", "text": "<Post 1: Echte Story aus dem Fachgebiet dieser Person. Kein Sales-Kontext wenn nicht vorhanden. 120-180 Wörter. Zeilenumbrüche nach 1-2 Sätzen. Endet mit echter Frage.>"},
+    {"type": "Fachwissen teilen", "hook": "Praxiserfahrung", "text": "<Post 2: Konkreter Tipp oder Erkenntnis aus dem tatsächlichen Fachgebiet. 3-4 Punkte.>"},
+    {"type": "Karriere transparent machen", "hook": "Ehrlichkeit", "text": "<Post 3: Offen über aktuellen Stand / Ziel. Kurz. Einladend. Zu dem Fachgebiet dieser Person passend.>"}
   ],
   "tips": [
-    {"icon": "🚀", "title": "<Quick Win>", "text": "<konkrete Handlungsempfehlung, 1-2 Sätze>"},
+    {"icon": "🚀", "title": "<Spezifischer Quick Win für dieses Profil>", "text": "<1-2 konkrete Sätze — kein generischer Ratschlag>"},
     {"icon": "🎯", "title": "<Quick Win>", "text": "<konkret>"},
     {"icon": "🔗", "title": "<Quick Win>", "text": "<konkret>"},
     {"icon": "📸", "title": "<Quick Win>", "text": "<konkret>"},
     {"icon": "💬", "title": "<Quick Win>", "text": "<konkret>"}
   ],
   "checklist": [
-    {"label": "Profilfoto professionell & aktuell", "status": "ok"},
-    {"label": "Deckbild / Banner optimiert", "status": "warn"},
-    {"label": "Headline vollständig & keyword-optimiert", "status": "fail"},
-    {"label": "About-Text mit starkem Hook & CTA", "status": "fail"},
-    {"label": "Aktuelle Position mit 3+ Bullets", "status": "ok"},
-    {"label": "Skills-Sektion ≥ 10 relevante Skills", "status": "warn"},
-    {"label": "Featured-Bereich aktiv genutzt", "status": "fail"},
-    {"label": "Empfehlungen / Referenzen vorhanden", "status": "ok"},
+    {"label": "Profilfoto professionell & aktuell", "status": "warn"},
+    {"label": "Deckbild / Banner zum Fachgebiet passend", "status": "warn"},
+    {"label": "Headline alle Kernrollen abgebildet", "status": "fail"},
+    {"label": "About-Text mit konkretem Einstieg & CTA", "status": "fail"},
+    {"label": "Aktuelle Position mit aussagekräftigen Bullets", "status": "warn"},
+    {"label": "Skills-Sektion vollständig & aktuell", "status": "warn"},
+    {"label": "Featured-Bereich genutzt", "status": "fail"},
+    {"label": "Empfehlungen vorhanden", "status": "warn"},
     {"label": "Kontaktinfos vollständig", "status": "warn"},
-    {"label": "Regelmäßige Aktivität (Posts/Kommentare)", "status": "warn"}
+    {"label": "Regelmäßige Aktivität sichtbar", "status": "warn"}
   ]
 }`;
 }
 
 function buildDemo(p) {
-  const role = (p.targetRole || p.title || 'Zielrolle');
+  // Smart demo: use actual profile inputs to generate relevant content
+  const role = p.targetRole || '';
+  const title = p.title || (p.pasteRaw ? p.pasteRaw.substring(0, 80).split('\n')[0] : '');
+  const exp = p.exp || '';
+  const achievements = p.achievements || '';
+  const industry = p.industry || '';
   const t = p.toneHL || p.toneAll || '🎯 Direkt & klar';
+
+  // Derive context from inputs
+  const roleOrTitle = role || title || 'meine Rolle';
+  const industryCtx = industry ? ` im Bereich ${industry}` : '';
+  const expCtx = exp ? `\n${exp}` : '';
+  const achievCtx = achievements ? achievements.split('\n').filter(l=>l.trim()).slice(0,2).join(' · ') : '';
+
+  // Dynamic score based on how much info was provided
+  const infoCount = [title,role,exp,achievements,p.currentHL,p.currentAB].filter(x=>x&&x.trim()).length;
+  const score = Math.min(45 + infoCount * 6, 78);
+
   return {
+    score,
+    scoreTitle: score < 55 ? 'Wenig Info — Potenzial schwer einschätzbar' : score < 65 ? 'Solide Basis — Optimierung lohnt sich' : 'Gutes Profil — Details machen den Unterschied',
+    scoreDesc: `Basierend auf deinen Angaben${industryCtx}: ${infoCount < 3 ? 'Je mehr Details du eingibst, desto gezielter die Optimierung. Füge Erfolge und Zahlen hinzu.' : 'Dein Profil hat eine klare Ausrichtung. Headline und About-Text haben das größte Optimierungspotenzial.'}`,
     score: 64,
     scoreTitle: 'Ausbaufähig — klares Potenzial',
     scoreDesc: `Dein Profil ist sichtbar, kommuniziert aber noch keine Wirkung für "${role}". Headline und About sind noch nicht auf deine Zielrolle ausgerichtet.`,
     headline_variants: [
-      {tone: t + ' · Rolle + Wert', text: `${role} | B2B Sales & Enterprise | Pipeline-Builder | Offen für neue Herausforderungen im DACH-Raum`},
-      {tone: t + ' · Zahlen-fokussiert', text: `Vertriebsprofi → ${role} | 8-stellige Pipelines | Quota 140%+ | Suche nächste Herausforderung`},
-      {tone: t + ' · Frage-Format', text: `Was macht einen exzellenten ${role} aus? Ich zeig's dir. | B2B | Enterprise | DACH`}
+      {tone: 'Titel-fokussiert', text: title ? `${title}${industryCtx ? ' · ' + industry : ''} | DACH` : `${roleOrTitle} | Fachexperte | DACH`},
+      {tone: 'Ergebnis-fokussiert', text: achievCtx ? `${achievCtx}${role ? ' | Offen für ' + role : ''}` : `${roleOrTitle}${industryCtx} | Ergebnisorientiert | Offen für neue Herausforderungen`},
+      {tone: 'Ungewöhnlicher Einstieg', text: role ? `Was braucht ein guter ${role}? Frag mich.${industryCtx ? ' · ' + industry : ''}` : `Nicht der lauteste im Raum — aber derjenige, der liefert.${title ? ' · ' + title : ''}`}
     ],
     about_variants: [
-      {tone: t + ' · Ausführlich (4 Absätze)', text: `Ich helfe Unternehmen, ihre wichtigsten Deals zu gewinnen — mit einem Ansatz, der auf echtem Kundenverständnis statt auf Scripts basiert.\n\nIn den letzten Jahren habe ich im B2B-Vertrieb eines gelernt: Wer die Sprache seiner Kunden spricht und ihre echten Probleme kennt, gewinnt. Nicht derjenige mit den lautesten Pitches.\n\nMeine Bilanz spricht für sich: Pipelines im 8-stelligen Bereich aufgebaut, Enterprise-Deals mit einer durchschnittlichen Größe von €200k+ abgeschlossen, Teams auf Quota-Übererfüllung von 140% geführt.\n\n📍 Ich suche aktiv nach einer Position als ${role} — idealerweise in einem wachsenden Unternehmen im DACH-Raum. Lass uns verbinden und austauschen.`},
-      {tone: t + ' · Kompakt (2 Absätze)', text: `Enterprise-Vertrieb ist meine Stärke: Ich baue Pipelines, schließe komplexe Deals und entwickle Teams — mit Ergebnissen, die messbar sind.\n\nNächstes Ziel: ${role}. Wenn du weißt, wo es spannende Möglichkeiten gibt — ich freue mich auf deine Nachricht.`}
+      {tone: 'Ausführlich — Story-Format',
+       text: `${title ? title + '.' : 'Ich arbeite in meinem Fachgebiet.'} Das klingt nach einem Job-Titel. Was dahinter steckt: ${exp || 'jahrelange Erfahrung'}.\n\n${achievements ? 'Was ich bisher erreicht habe: ' + achievements.split('\n').filter(l=>l.trim()).join(' · ') + '.' : 'Ich arbeite lösungsorientiert und liefere messbare Ergebnisse.'}\n\n${industry ? 'Mein Schwerpunkt liegt im Bereich ' + industry + ' — einem Feld, das sich gerade grundlegend verändert.' : 'Ich kenne mein Fachgebiet nicht nur aus der Theorie.'}\n\n${role ? '📍 Ich suche aktiv nach einer Position als ' + role + '. ' : '📍 Ich bin offen für neue Möglichkeiten. '}Wenn das passt — meld dich.`},
+      {tone: 'Kompakt — direkt auf den Punkt',
+       text: `${title || roleOrTitle}${expCtx ? '. ' + exp + '.' : '.'}\n\n${achievCtx ? achievCtx + '.' : 'Ergebnisse zählen — nicht Überschriften.'} ${role ? 'Nächster Schritt: ' + role + '.' : 'Offen für das Richtige.'} Schreib mir.`}
     ],
     bullets: [
-      {position: 'Aktuelle Position', original: '', optimized: ['Aufbau einer Enterprise-Pipeline von €4M+ innerhalb von 12 Monaten durch gezieltes Outbound und strategische Partnerschaften', 'Steigerung der Team-Quota-Erreichung von 87% auf 140% durch Coaching und strukturierte Deal-Reviews', 'Verhandlung und Abschluss von 3 strategischen Key-Accounts (€150k–€500k ARR) mit 6-monatigem Sales-Zyklus']},
+      {position: title || 'Aktuelle Position', original: p.currentBU || '', optimized: [
+        achievements ? achievements.split('\n').filter(l=>l.trim())[0] || `Verantwortung für Kernaufgaben im Bereich ${industry || 'Fachgebiet'} übernommen` : `Kernaufgaben im Bereich ${roleOrTitle} eigenverantwortlich umgesetzt`,
+        exp ? `${exp.split(',')[0]} praktische Erfahrung in der Umsetzung komplexer Anforderungen` : `Projekte und Prozesse strukturiert aufgesetzt und weiterentwickelt`,
+        `Schnittstelle zwischen ${industry || 'Fachbereich'} und internen Stakeholdern — Ergebnisse messbar gemacht`
+      ]},
     ],
-    keywords: [
-      {kw: 'Enterprise Sales', priority: 'hoch', reason: `Kernbegriff bei 78% aller ${role}-Suchen`},
-      {kw: 'Revenue Growth', priority: 'hoch', reason: 'Zeigt strategische Verantwortung — Pflichtfeld für Senior-Rollen'},
-      {kw: 'Pipeline Management', priority: 'mittel', reason: 'Häufige Recruiter-Suchanfrage für operative Sales-Stärke'},
-      {kw: 'MEDDIC / MEDDPICC', priority: 'mittel', reason: 'Methodik-Keywords erhöhen Glaubwürdigkeit bei Enterprise-Rollen'},
-      {kw: 'Go-to-Market Strategy', priority: 'niedrig', reason: 'Sinnvoll für Head-of-Rollen mit strategischem Einfluss'}
-    ],
+    keywords: (() => {
+      // Build keywords from actual profile context
+      const kws = [];
+      if (title) kws.push({kw: title.split('|')[0].split('·')[0].trim(), priority: 'hoch', reason: 'Deine Kernrolle — muss prominent in Headline und About stehen'});
+      if (industry) kws.push({kw: industry.split(',')[0].trim(), priority: 'hoch', reason: `Deine Zielbranche — Recruiter filtern aktiv nach diesem Begriff`});
+      if (role && role !== title) kws.push({kw: role.split('·')[0].trim(), priority: 'hoch', reason: 'Deine Zielrolle — sollte in Headline und About eingebaut werden'});
+      if (exp) kws.push({kw: exp.split(',')[0].split('Jahre')[1]?.trim() || exp.split(' ')[0], priority: 'mittel', reason: 'Aus deiner Erfahrungsbeschreibung — relevanter Fachbegriff für Suchanfragen'});
+      // Fill up to 5 with generic relevant ones
+      const fallbacks = [
+        {kw: 'Projektmanagement', priority: 'mittel', reason: 'Universell relevanter Kompetenzbereich für Führungsrollen'},
+        {kw: 'Stakeholder Management', priority: 'mittel', reason: 'Wichtige Schnittstellenkompetenz für Senior-Positionen'},
+        {kw: 'DACH-Markt', priority: 'niedrig', reason: 'Regionaler Kontext — hilfreich für lokale Recruiter'},
+      ];
+      let i = 0;
+      while (kws.length < 5 && i < fallbacks.length) { kws.push(fallbacks[i]); i++; }
+      return kws.slice(0,5);
+    })(),
     posts: [
-      {type: 'Karriere-Story', hook: 'Persönliche Erfahrung', text: `Vor 3 Jahren habe ich meinen größten Deal fast verloren.\n\nNicht wegen des Preises.\nNicht wegen der Konkurrenz.\nSondern weil ich nicht zugehört habe.\n\nDer CTO sagte mir direkt: "Sie pitchen das falsche Problem."\n\nDas war der Wendepunkt. Ich habe das Meeting unterbrochen, einen Schritt zurückgemacht und einfach gefragt: "Was ist gerade Ihre größte Baustelle?"\n\n45 Minuten später hatten wir einen Letter of Intent.\n\nDie Lektion: Zuhören ist die unterschätzteste Sales-Skill überhaupt.\n\nWas war euer Wendepunkt im Vertrieb? 👇`},
-      {type: 'Fachbeitrag', hook: 'Branchen-Insight', text: `3 Fehler, die Enterprise-Deals töten (und wie ihr sie vermeidet):\n\n1️⃣ Zu früh auf den Preis eingehen\n→ Wert zuerst. Preis folgt.\n\n2️⃣ Nur einen Stakeholder ansprechen\n→ Enterprise = Buying Committee. Alle Ebenen abholen.\n\n3️⃣ Nach dem Demo verschwinden\n→ Follow-up mit echtem Mehrwert, nicht "Nur mal nachfragen"\n\nWelcher Fehler kostet euch am meisten? Kommentar 👇`},
-      {type: 'Karriere-Update', hook: 'Transparenz & Authentizität', text: `Ich bin offen: Ich suche meine nächste Herausforderung.\n\nNach Jahren im B2B-Enterprise-Vertrieb möchte ich den nächsten Schritt machen — in Richtung ${role}.\n\nWas ich mitbringe: Nachweisbare Ergebnisse, ein Netzwerk im DACH-Raum und echte Leidenschaft für komplexe Sales-Prozesse.\n\nWenn ihr spannende Positionen kennt oder einfach connecten möchtet — schreibt mir. 🙏`}
+      {type: 'Persönliche Geschichte', hook: 'Konkreter Moment',
+       text: `Es gibt Momente im Job, die alles verändern.\n\nMeiner war, als ich${title ? ' als ' + title.split('·')[0].trim() : ''} zum ersten Mal wirklich verstanden habe, was meine Arbeit bewirkt.\n\n${achievements ? achievements.split('\n').filter(l=>l.trim())[0] : 'Nicht durch große Worte. Sondern durch konsequentes Tun.'}\n\nDas klingt simpel. Ist es aber nicht.\n\nWas war euer prägendster Moment${industry ? ' im Bereich ' + industry.split(',')[0] : ' im Beruf'}? 👇`},
+      {type: 'Fachwissen teilen', hook: 'Praxiserfahrung',
+       text: `${title ? title.split('·')[0].trim() + ': ' : ''}Was ich nach ${exp ? exp.split(',')[0] : 'Jahren Praxis'} gelernt habe:\n\n1️⃣ Theorie ist der Anfang — nicht das Ziel\n\n2️⃣ ${industry ? industry.split(',')[0] + ' verändert sich schneller als die meisten denken' : 'Die besten Lösungen kommen selten von der lautesten Person im Raum'}\n\n3️⃣ ${achievCtx || 'Ergebnisse sprechen mehr als Titel'}\n\nWas würdet ihr ergänzen? 👇`},
+      {type: 'Karriere transparent machen', hook: 'Ehrlichkeit',
+       text: `Kurzes Update von mir:\n\n${role ? 'Ich suche aktiv nach einer Position als ' + role + '.' : 'Ich bin offen für neue Möglichkeiten.'}\n\n${exp ? 'Ich bringe ' + exp + ' mit.' : ''}${achievCtx ? '\n' + achievCtx + '.' : ''}\n\nKein großes Drama — ich will einfach den nächsten Schritt machen.\n\nWenn ihr etwas Passendes kennt oder einfach connecten möchtet: meld euch. 🙏`}
     ],
     tips: [
       {icon: '🚀', title: 'Featured-Bereich sofort aktivieren', text: 'Füge deinen besten LinkedIn-Post, eine Fallstudie oder dein Portfolio hinzu. Recruiter schauen als erstes dort hin.'},
@@ -1145,6 +1219,15 @@ function renderResults(d, p) {
 }
 
 // Store posts text for copying
+function downloadApp() {
+  // Create a download link for the HTML file itself
+  const blob = new Blob([document.documentElement.outerHTML], {type: 'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'jobcoach-linkedin-optimizer.html';
+  a.click();
+}
+
 function copyPostText(idx) {
   if (!lastData || !lastData.posts[idx]) return;
   navigator.clipboard.writeText(lastData.posts[idx].text).catch(()=>{});
@@ -1162,15 +1245,28 @@ async function regenSection(sec) {
   const tone = sec==='headline' ? tones.hl : tones.ab;
   const count = sec==='headline' ? 3 : 2;
 
-  const prompt = `Erstelle ${count} LinkedIn-${sec==='headline'?'Headline-Varianten':'About-Text-Varianten'} für eine Person die ${role} werden möchte.
-Tonalität: ${tone}${fbNote}
-${sec==='headline' ? 'Headline max 220 Zeichen. Jede Variante MUSS anders strukturiert sein.' : 'Variante 1: 4 Absätze ausführlich. Variante 2: 2 Absätze kompakt. UNTERSCHIEDLICHER Opener.'}
+  const currentTitle = document.getElementById('fTitle').value || document.getElementById('pasteText').value.substring(0,100) || '';
+  const achievements = document.getElementById('fAchiev').value || '';
+  const prompt = `Erstelle ${count} LinkedIn-${sec==='headline'?'Headline-Varianten':'About-Text-Varianten'}.
+
+Profil-Kontext:
+- Position/Hintergrund: ${currentTitle}
+- Erfolge: ${achievements}
+- Zielrolle: ${role || 'offen — basierend auf Stärken optimieren'}
+- Tonalität: ${tone}
+${fbNote}
+
+REGELN:
+- Keine branchenfremden Keywords oder Floskeln
+- Menschliche Sprache, kein KI-Bingo ("leidenschaftlich", "Mehrwert", "nachhaltig" verboten)
+${sec==='headline' ? '- Headline max 180 Zeichen. V1: Titel-fokussiert | V2: Ergebnis-fokussiert | V3: Ungewöhnlicher Einstieg' : '- V1: 4 Absätze mit Story-Einstieg | V2: 2 kompakte Absätze, anderer Opener, kurze Sätze'}
+
 Antworte NUR mit JSON: {"variants": [{"tone": "...", "text": "..."}, ...]}`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: {'Content-Type':'application/json'},
+      headers: {'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true'},
       body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
     });
     const data = await resp.json();
@@ -1185,6 +1281,101 @@ Antworte NUR mit JSON: {"variants": [{"tone": "...", "text": "..."}, ...]}`;
   btn.textContent = sec==='headline' ? '↻ Neu generieren' : '↻ Neu generieren';
   btn.disabled = false;
 }
+
+  // ══ LOGIN ══
+  function getApiKey() {
+    return sessionStorage.getItem('jc_key') || '';
+  }
+
+  function doLogin() {
+    const inp = document.getElementById('keyInput');
+    const key = inp.value.trim();
+    const err = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+
+    if (!key.startsWith('sk-ant-')) {
+      err.style.display = 'block';
+      inp.style.borderColor = '#FCA5A5';
+      return;
+    }
+
+    // Save key and hide login
+    sessionStorage.setItem('jc_key', key);
+    err.style.display = 'none';
+
+    // Animate login button
+    btn.textContent = '✓ Zugang gewährt';
+    btn.style.background = 'linear-gradient(135deg,#059669,#047857)';
+
+    setTimeout(() => {
+      document.getElementById('loginScreen').style.display = 'none';
+    }, 600);
+  }
+
+  function toggleKeyVisibility() {
+    const inp = document.getElementById('keyInput');
+    const btn = document.getElementById('eyeBtn');
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  // Show login on load if no key stored
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!sessionStorage.getItem('jc_key')) {
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+  });
+
 </script>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#0F1A3D 0%,#1B2B5E 50%,#253580 100%);z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:24px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,0.4);text-align:center;">
+
+    <!-- Logo -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px;">
+      <svg width="40" height="40" viewBox="0 0 38 38" fill="none">
+        <path d="M19 4L21.8 13.2H31.5L23.9 18.8L26.6 28L19 22.4L11.4 28L14.1 18.8L6.5 13.2H16.2L19 4Z" stroke="#1B2B5E" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M14 26L19 10L24 26M16.5 14L19 10L21.5 14" stroke="#00BFA6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div style="text-align:left;">
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:#1B2B5E;">JobCoach <span style="color:#00BFA6;">AI</span></div>
+        <div style="font-size:10px;font-weight:500;color:#9AA3B2;letter-spacing:1.8px;text-transform:uppercase;">Career Intelligence Platform</div>
+      </div>
+    </div>
+
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:#1B2B5E;margin-bottom:6px;">Zugang zur Plattform</div>
+    <div style="font-size:13px;color:#9AA3B2;margin-bottom:28px;line-height:1.6;">Bitte gib deinen Zugangscode ein,<br>um fortzufahren.</div>
+
+    <div style="position:relative;margin-bottom:12px;">
+      <input
+        type="password"
+        id="keyInput"
+        placeholder="sk-ant-..."
+        onkeydown="if(event.key==='Enter') doLogin()"
+        style="width:100%;font-family:'DM Sans',sans-serif;font-size:14px;color:#2D3548;background:#F8F9FA;border:1.5px solid #E2E6EC;border-radius:12px;padding:14px 48px 14px 16px;outline:none;transition:all .2s;box-sizing:border-box;"
+        onfocus="this.style.borderColor='#00BFA6';this.style.background='white';this.style.boxShadow='0 0 0 3px rgba(0,191,166,.1)'"
+        onblur="this.style.borderColor='#E2E6EC';this.style.background='#F8F9FA';this.style.boxShadow='none'"
+      >
+      <button onclick="toggleKeyVisibility()" id="eyeBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9AA3B2;font-size:16px;padding:4px;">👁</button>
+    </div>
+
+    <div id="loginError" style="display:none;font-size:12px;color:#991B1B;background:#FEF2F2;border:1px solid #FCA5A5;border-radius:8px;padding:8px 12px;margin-bottom:12px;text-align:left;">
+      ❌ Ungültiger Zugangscode. Bitte prüfe deinen API-Key.
+    </div>
+
+    <button onclick="doLogin()" id="loginBtn"
+      style="width:100%;padding:14px;background:linear-gradient(135deg,#1B2B5E 0%,#253580 100%);color:white;border:none;border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(27,43,94,.25);"
+      onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 8px 24px rgba(27,43,94,.35)'"
+      onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 16px rgba(27,43,94,.25)'"
+    >
+      Einloggen
+    </button>
+
+    <div style="margin-top:20px;font-size:11px;color:#C4C8D4;line-height:1.6;">
+      Dein Zugangscode wird nur lokal gespeichert<br>und nie an Dritte weitergegeben.
+    </div>
+  </div>
+</div>
 </body>
 </html>
